@@ -1,5 +1,5 @@
 # ahcg_pipeline
-Variant calling pipeline for genomic data analysis. This pipeline is part of the class Applied Human Computational Genomics - Fall 2017 of Georgia Institute of Technology
+Variant calling pipeline for genomic data analysis. This pipeline is part of the class Applied Human Computational Genomics - Fall 2017 of the Georgia Institute of Technology
 
 ## Requirements
 
