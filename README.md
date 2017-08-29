@@ -1,13 +1,13 @@
 # ahcg_pipeline
-Variant calling pipeline for genomic data analysis. This pipeline is part of the class Applied Human Computational Genomics - Fall 2017 of Georgia Institute of Technology
+Variant calling pipeline for genomic data analysis. This pipeline is part of the class Applied Human Computational Genomics - Fall 2017 of the Georgia Institute of Technology.
 
 ## Requirements
 
 1. [Python3 - version 3.4.1](https://www.python.org/download/releases/3.4.1/)
 2. [Trimmomatic - version 0.36](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip)
-3. [Bowtie2 - version 2.2.9](https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/)
-4. [Picard tools - version 2.6.0](https://github.com/broadinstitute/picard/releases/download/2.6.0/picard.jar)
-5. [GATK - version 3.4](https://software.broadinstitute.org/gatk/download/)
+3. [Bowtie2 - version 2.3.2](https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.2)
+4. [Picard tools - version 2.11.0](https://github.com/broadinstitute/picard/releases/download/2.11.0/picard.jar)
+5. [GATK - version 3.8](https://software.broadinstitute.org/gatk/download/)
 
 ## Reference genome
 
