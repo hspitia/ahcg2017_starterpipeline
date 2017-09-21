@@ -35,3 +35,42 @@ To access help use the following command:
 ```{sh}
 python3 ahcg_pipeline.py -h
 ```
+##  Execution example
+
+### Building directory structure
+
+```{sh}
+mkdir -p data/reads data/reference data/adapters output 
+```
+### Downloading data
+    
+#### Read sample
+
+We will download the sample SRR948996 from the SRA databse using the SRA-Toolkit:
+    
+```{sh}
+fastq-dump --split-files SRR948994
+```
+
+#### Reference genome
+
+```{sh}
+wget ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Homo_sapiens/NCBI/GRCh38/Homo_sapiens_NCBI_GRCh38.tar.gz
+```
+###  Running the pipeline
+
+```{sh}
+./ahcg_pipeline_v1.0.1.py \
+-t /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar  \
+-b /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2 \
+-p /data2/AHCG2017FALL/bin/picard/picard.jar \
+-g /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836 \
+-i /data2/AHCG2017FALL/data \
+-w /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome \
+-d /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz \
+-r /data2/AHCG2017FALL/reference_genome/genome.fa \
+-a /home/hfen3/adapters.fa \
+-o output
+```
+
+
