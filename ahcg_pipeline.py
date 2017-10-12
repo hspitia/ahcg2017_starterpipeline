@@ -8,19 +8,22 @@ import subprocess
 
 def main(trim_path, bowtie_path, picard_path, gatk_path,
         input_path, index_path, dbsnp_path, adapter_path,
-        ref_path, out_path):
-
+        ref_path, geneset_path, out_path):
+    
     #Get complete path
-    trim_path = os.path.abspath(trim_path)
-    bowtie_path = os.path.abspath(bowtie_path)
-    picard_path = os.path.abspath(picard_path)
-    gatk_path = os.path.abspath(gatk_path)
-    input_path = [os.path.abspath(files) for files in input_path]
-    index_path = os.path.abspath(index_path)
-    dbsnp_path = os.path.abspath(dbsnp_path)
-    ref_path = os.path.abspath(ref_path)
-    out_path = os.path.abspath(out_path)
-    adpater_path = os.path.abspath(adapter_path)
+    trim_path      = os.path.abspath(trim_path)
+    bowtie_path    = os.path.abspath(bowtie_path)
+    picard_path    = os.path.abspath(picard_path)
+    gatk_path      = os.path.abspath(gatk_path)
+    input_path     = [os.path.abspath(files) for files in input_path]
+    index_path     = os.path.abspath(index_path)
+    dbsnp_path     = os.path.abspath(dbsnp_path)
+    ref_path       = os.path.abspath(ref_path)
+    out_path       = os.path.abspath(out_path)
+    adpater_path   = os.path.abspath(adapter_path)
+    geneset_path   = os.path.abspath(geneset_path)     # guardant360 gen set BED file to calculate coverage
+    covscript_path = os.path.abspath('getCoverage.sh') # bash script to calculate average and max coverage. It it assumed this script is in the same folder of the pipeline script
+    
     #Check if paths exist
     if not os.path.exists(trim_path):
         raise FileNotFoundError('Trimmomatic not found at {0}'.format(trim_path))
@@ -51,6 +54,9 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     
     if not os.path.exists(adapter_path):
         raise FileNotFoundError('Adapter file not found at {0}'.format(adapter_path))
+    
+    if not os.path.exists(geneset_path):
+        raise FileNotFoundError('Gen set file not found at {0}'.format(geneset_path))
 
 
     #Creat output directory
@@ -59,8 +65,8 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
 
 
     #Trim fastq files
-    read1 = input_path[0]
-    read2 = input_path[1]
+    read1  = input_path[0]
+    read2  = input_path[1]
     tread1 = '{1}_trimmed.fq'.format(out_path, os.path.splitext(read1)[0])
     tread2 = '{1}_trimmed.fq'.format(out_path, os.path.splitext(read2)[0])
     sread1 = '{1}_unused.fq'.format(out_path, os.path.splitext(read1)[0])
@@ -80,8 +86,8 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
 
     #Align the reads using bowtie
     sam_path = '{1}.sam'.format(out_path, os.path.splitext(tread1)[0])
-    bcmd = [ bowtie_path, '-x', index_path, '-S', sam_path, '-p', '1' , '-1',
-            tread1, '-2', tread2]
+    bcmd     = [ bowtie_path, '-x', index_path, '-S', sam_path, '-p', '1' , '-1',
+                 tread1, '-2', tread2]
     
     brun = subprocess.Popen(bcmd, shell=False)
     brun.wait()
@@ -92,11 +98,11 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
 
     #Add read group information
     add_path = '{0}/{1}_RG.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
-    acmd = ['java', '-Xmx1g', '-jar', picard_path, 'AddOrReplaceReadGroups',
-        'I='+sam_path , 'O='+add_path, 'SORT_ORDER=coordinate', 'RGID=Test', 
-        'RGLB=ExomeSeq', 'RGPL=Illumina', 'RGPU=HiSeq2500', 'RGSM=Test', 
-        'RGCN=AtlantaGenomeCenter', 'RGDS=ExomeSeq', 'RGDT=2016-08-24', 'RGPI=null', 
-        'RGPG=Test', 'RGPM=Test', 'CREATE_INDEX=true']
+    acmd     = ['java', '-Xmx1g', '-jar', picard_path, 'AddOrReplaceReadGroups',
+                'I='+sam_path , 'O='+add_path, 'SORT_ORDER=coordinate', 'RGID=Test', 
+                'RGLB=ExomeSeq', 'RGPL=Illumina', 'RGPU=HiSeq2500', 'RGSM=Test', 
+                'RGCN=AtlantaGenomeCenter', 'RGDS=ExomeSeq', 'RGDT=2016-08-24', 'RGPI=null', 
+                'RGPG=Test', 'RGPM=Test', 'CREATE_INDEX=true']
     
     arun = subprocess.Popen(acmd, shell=False)
     arun.wait()
@@ -108,9 +114,9 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #Mark PCR duplicates
     dup_path = '{0}/{1}_MD.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
     met_path = '{0}/{1}_MD.metrics'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
-    mdcmd = ['java', '-Xmx1g', '-jar', picard_path, 'MarkDuplicates', 'I='+add_path, 
-        'O='+dup_path, 'METRICS_FILE='+met_path, 'REMOVE_DUPLICATES=false', 
-        'ASSUME_SORTED=true', 'CREATE_INDEX=true']
+    mdcmd    = ['java', '-Xmx1g', '-jar', picard_path, 'MarkDuplicates', 'I='+add_path, 
+                'O='+dup_path, 'METRICS_FILE='+met_path, 'REMOVE_DUPLICATES=false', 
+                'ASSUME_SORTED=true', 'CREATE_INDEX=true']
     
     mdrun = subprocess.Popen(mdcmd, shell=False)
     mdrun.wait()
@@ -120,9 +126,9 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
 
     #Fix mate information
     fix_path = '{0}/{1}_FM.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
-    fcmd = ['java', '-Xmx1g', '-jar', picard_path, 'FixMateInformation',
-        'I='+dup_path, 'O='+fix_path, 'ASSUME_SORTED=true', 'ADD_MATE_CIGAR=true',
-        'CREATE_INDEX=true']
+    fcmd     = ['java', '-Xmx1g', '-jar', picard_path, 'FixMateInformation',
+                'I='+dup_path, 'O='+fix_path, 'ASSUME_SORTED=true', 'ADD_MATE_CIGAR=true',
+                'CREATE_INDEX=true']
 
     frun = subprocess.Popen(fcmd, shell=False)
     frun.wait()
@@ -133,10 +139,9 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
    
     #Run realigner target creator
     interval_path = '{0}/{1}.intervals'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0]) 
-    
-    trcmd = ['java', '-jar', gatk_path, '-T', 'RealignerTargetCreator', '-o',
-        interval_path, '-nt', '1', '-I', fix_path, '-R', ref_path, '-known',
-        dbsnp_path]
+    trcmd         = ['java', '-jar', gatk_path, '-T', 'RealignerTargetCreator', '-o',
+                     interval_path, '-nt', '1', '-I', fix_path, '-R', ref_path, '-known',
+                     dbsnp_path]
     
     trrun = subprocess.Popen(trcmd, shell=False)
     trrun.wait()
@@ -148,10 +153,9 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
 
     #Run indel realigner
     ral_path = '{0}/{1}_IR.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
-    
-    recmd = ['java', '-jar', gatk_path, '-T', 'IndelRealigner',
-        '--targetIntervals', interval_path, '-o', ral_path,
-        '-I', fix_path, '-R', ref_path]
+    recmd    = ['java', '-jar', gatk_path, '-T', 'IndelRealigner',
+                '--targetIntervals', interval_path, '-o', ral_path,
+                '-I', fix_path, '-R', ref_path]
 
     rerun = subprocess.Popen(recmd, shell=False)
     rerun.wait()
@@ -162,10 +166,9 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
 
     #Base quality score recalibration
     bqs_path = '{0}/{1}.table'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
-     
     bqscmd = ['java', '-jar', gatk_path, '-T', 'BaseRecalibrator', '-R', ref_path,
-        '-I', ral_path, '-o', bqs_path, '-nct', '1', '-cov', 'ReadGroupCovariate',
-        '-knownSites', dbsnp_path]
+              '-I', ral_path, '-o', bqs_path, '-nct', '1', '-cov', 'ReadGroupCovariate',
+              '-knownSites', dbsnp_path]
 
     bqsrun = subprocess.Popen(bqscmd, shell=False)
     bqsrun.wait()
@@ -174,11 +177,10 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
         print('Base quality score recalibrator failed; Exiting program')
         sys.exit()
     
-    #Print Reads
+    #Print Reads (generate final BAM)
     fbam_path = '{0}/{1}_final.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
-    prcmd = ['java', '-jar', gatk_path, '-T', 'PrintReads', '-R', ref_path, '-I',
-            ral_path, '-o', fbam_path, '-BQSR', bqs_path, '-nct', '1']
-
+    prcmd     = ['java', '-jar', gatk_path, '-T', 'PrintReads', '-R', ref_path, '-I',
+                 ral_path, '-o', fbam_path, '-BQSR', bqs_path, '-nct', '1']
 
     prrun = subprocess.Popen(prcmd, shell=False)
     prrun.wait()
@@ -186,8 +188,21 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     if prrun.returncode != 0:
         print('Print reads failed; Exiting program')
         sys.exit()
+        
+    #Average and Max coverage calculation from the final BAM file
+    #guardant360 set
+    covfile_path = '{0}/{1}_{2}_coverage.tsv'.format(out_path, os.path.splitext(os.path.basename(geneset_path))[0], 
+                    os.path.splitext(os.path.basename(sam_path))[0])
+    covcmd       = [covscript_path, fbam_path, geneset_path, '>', covfile_path]
+    
+    prrun  = subprocess.Popen(covcmd, shell=False)
+    prrun.wait()
 
-
+    if prrun.returncode != 0:
+        print('Coverage calculation failed; Exiting program')
+        sys.exit()
+    
+    
     #Haplotype caller
     vcf_path = '{0}/variants.vcf'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
 
