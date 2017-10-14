@@ -3,8 +3,8 @@
 ########################################################################
 # Author:       Hector Espitia
 # Intitution:   Georgia Institute of Technology
-# Version:      0.3
-# Date:         10/12/2017
+# Version:      0.4
+# Date:         10/14/2017
 
 # Description:  
 #       Given a BAM file, calculates the mean and max coverage of each 
@@ -27,7 +27,7 @@ gePerBaseCoverage.sh\\n
 \\n\\n
 \\busage: \\n\\n
 
-  ./gePerBaseCoverage.sh <BAM_FILE> <BED_FILE> [OUT_FILE]\\n
+  ./gePerBaseCoverage.sh <BAM_FILE> <BED_FILE> <OUT_FILE>\\n
 
 EOF
 
@@ -59,15 +59,9 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     
     region="${chr}:${start}-${end}"
     
+    # extract the region's per-base coverage info and compute average and max values
     echo -n ${line} | sed 's/ /\t/g' | tee -a $outFile
     samtools depth -r ${region} ${bamFile} | awk 'BEGIN{OFS="\t"; max = 0} {sum += $3; if($3 > max) max = $3 } END{mean=0; if(NR>0) mean = sum/NR; print "\t"mean, max}' | tee -a $outFile;
     
 done < "$bedFile"
 
-# bamFile=$1;
-# bedFile=$2;
-
-# for region in $(cut BRAF-KRAS.genes.bed -f1-3|sed 's/\t/:/' | sed 's/\t/-/'); do
-#   echo -n "$region "
-#   samtools depth -r $region $bamFile | awk 'BEGIN{max = -1} {sum += $3; if($3 > max) max = $3 } END{print sum/NR, max}'
-# done
