@@ -6,9 +6,9 @@ import logging
 import argparse
 import subprocess
 
-def main(trim_path, bowtie_path, picard_path, gatk_path,
-        input_path, index_path, dbsnp_path, adapter_path,
-        ref_path, geneset_path, out_path):
+def main(trim_path, bowtie_path, picard_path, gatk_path, 
+         covscript_path, input_path, index_path, dbsnp_path, 
+         adapter_path, ref_path, geneset_path, out_path):
     
     #Get complete path
     trim_path      = os.path.abspath(trim_path)
@@ -21,8 +21,10 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     ref_path       = os.path.abspath(ref_path)
     out_path       = os.path.abspath(out_path)
     adpater_path   = os.path.abspath(adapter_path)
-    geneset_path   = os.path.abspath(geneset_path)     # guardant360 gen set BED file to calculate coverage
-    covscript_path = os.path.abspath('getCoverage.sh') # bash script to calculate average and max coverage. It it assumed this script is in the same folder of the pipeline script
+    geneset_path   = os.path.abspath(geneset_path)    # guardant360 gen set BED file to calculate coverage
+    covscript_path = os.path.abspath(covscript_path)  # bash script to calculate average and max coverage
+    
+    # print(input_path)
     
     #Check if paths exist
     if not os.path.exists(trim_path):
@@ -42,7 +44,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
             raise FileNotFoundError('Fastq files not found at {0}'.format(files))
     
     indicies = glob.glob('{0}.*.bt2'.format(index_path))
-    print(indicies)
+    # print(indicies)
     if len(indicies) == 0:
         raise FileNotFoundError('Bowtie index not found at {0}'.format(index_path))
     
@@ -56,7 +58,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
         raise FileNotFoundError('Adapter file not found at {0}'.format(adapter_path))
     
     if not os.path.exists(geneset_path):
-        raise FileNotFoundError('Gen set file not found at {0}'.format(geneset_path))
+        raise FileNotFoundError('Gene set file not found at {0}'.format(geneset_path))
 
 
     #Creat output directory
@@ -193,22 +195,23 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #guardant360 set
     covfile_path = '{0}/{1}_{2}_coverage.tsv'.format(out_path, os.path.splitext(os.path.basename(geneset_path))[0], 
                     os.path.splitext(os.path.basename(sam_path))[0])
-    covcmd       = [covscript_path, fbam_path, geneset_path, '>', covfile_path]
+    covcmd       = [covscript_path, fbam_path, geneset_path, covfile_path]
     
-    prrun  = subprocess.Popen(covcmd, shell=False)
-    prrun.wait()
+    print(covfile_path)
+    
+    covrun  = subprocess.Popen(covcmd, shell=False)
+    covrun.wait()
 
-    if prrun.returncode != 0:
+    if covrun.returncode != 0:
         print('Coverage calculation failed; Exiting program')
         sys.exit()
     
     
     #Haplotype caller
     vcf_path = '{0}/variants.vcf'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
-
-    hcmd = ['java', '-jar', gatk_path, '-T', 'HaplotypeCaller', '-R', ref_path,
-        '-I', fbam_path, '--dbsnp', dbsnp_path, '-o', vcf_path, '-nct', '1', 
-        '-gt_mode', 'DISCOVERY']
+    hcmd     = ['java', '-jar', gatk_path, '-T', 'HaplotypeCaller', '-R', ref_path,
+                '-I', fbam_path, '--dbsnp', dbsnp_path, '-o', vcf_path, '-nct', '1', 
+                '-gt_mode', 'DISCOVERY']
 
     hrun = subprocess.Popen(hcmd, shell=False)
     hrun.wait()
@@ -224,19 +227,29 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(prog='VariantCaller')
+    parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--trimmomatic', dest='trim_path', type=str, help='Path to Trimmomatic')
     parser.add_argument('-b', '--bowtie', dest='bowtie_path', type=str, help='Path to Bowtie')
     parser.add_argument('-p', '--picard', dest='picard_path', type=str, help='Path to Picard')
     parser.add_argument('-g', '--gatk', dest='gatk_path', type=str, help='Path to GATK')
-    parser.add_argument('-i', '--inputs', dest='input_path', nargs='+', type=str, help='Path to Paired end reads')
+    parser.add_argument('-c', '--covscript', dest='covscript_path', type=str, help='Path to coverage calculation script')
+    parser.add_argument('-i', '--inputs', dest='input_path', nargs='+', type=str, help='Path to paired end read files (space sparated)')
     parser.add_argument('-w', '--index', dest='index_path', type=str, help='Path to Reference bowtie index')
     parser.add_argument('-d', '--dbsnp', dest='dbsnp_path', type=str, help='Path to dbSNP vcf file')
     parser.add_argument('-r', '--refrence', dest='ref_path', type=str, help='Path to Reference file')
     parser.add_argument('-a', '--adapter', dest='adapter_path', type=str, help='Path to Adapter file')
+    parser.add_argument('-s', '--geneset', dest='geneset_path', type=str, help='Path to gene set bed file (genes of interest)')
     parser.add_argument('-o', '--outpath', dest='out_path', type=str, help='Path to Ouput directory')
+    
+    if len(sys.argv) == 1:
+        parser.print_help()
+        print('----------------------------------------------------------------------------')
+        print('{0} - ERROR: One or more required arguments are missing.\n'.format(parser.prog))
+        sys.exit(1)
+    
     args = parser.parse_args()
+    
 
 main(args.trim_path, args.bowtie_path, args.picard_path, args.gatk_path,
-    args.input_path, args.index_path, args.dbsnp_path, args.adapter_path,
-    args.ref_path, args.out_path)
+     args.covscript_path, args.input_path, args.index_path, args.dbsnp_path, 
+     args.adapter_path, args.ref_path, args.geneset_path, args.out_path)
