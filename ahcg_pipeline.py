@@ -5,6 +5,7 @@ import glob
 import logging
 import argparse
 import subprocess
+import statistics
 
 def main(trim_path, bowtie_path, picard_path, gatk_path, 
          covscript_path, input_path, index_path, dbsnp_path, 
@@ -78,12 +79,12 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
             sread1, tread2, sread2, 'ILLUMINACLIP:{0}:2:30:10'.format(adapter_path),
             'LEADING:0', 'TRAILING:0', 'SLIDINGWINDOW:4:15', 'MINLEN:36']
             
-    trun = subprocess.Popen(tcmd, shell=False)
-    trun.wait() 
+    # trun = subprocess.Popen(tcmd, shell=False)
+    # trun.wait() 
     
-    if trun.returncode != 0:
-        print('Fastq trimming failed; Exiting program')
-        sys.exit()
+    # if trun.returncode != 0:
+    #     print('Fastq trimming failed; Exiting program')
+    #     sys.exit()
          
 
     #Align the reads using bowtie
@@ -91,12 +92,12 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     bcmd     = [ bowtie_path, '-x', index_path, '-S', sam_path, '-p', '1' , '-1',
                  tread1, '-2', tread2]
     
-    brun = subprocess.Popen(bcmd, shell=False)
-    brun.wait()
+    # brun = subprocess.Popen(bcmd, shell=False)
+    # brun.wait()
     
-    if brun.returncode != 0:
-        print('Bowtie failed; Exiting program')
-        sys.exit()
+    # if brun.returncode != 0:
+    #     print('Bowtie failed; Exiting program')
+    #     sys.exit()
 
     #Add read group information
     add_path = '{0}/{1}_RG.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
@@ -106,12 +107,12 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
                 'RGCN=AtlantaGenomeCenter', 'RGDS=ExomeSeq', 'RGDT=2016-08-24', 'RGPI=null', 
                 'RGPG=Test', 'RGPM=Test', 'CREATE_INDEX=true']
     
-    arun = subprocess.Popen(acmd, shell=False)
-    arun.wait()
+    # arun = subprocess.Popen(acmd, shell=False)
+    # arun.wait()
     
-    if arun.returncode != 0:
-        print('Picard add read groups failed; Exiting program')
-        sys.exit()
+    # if arun.returncode != 0:
+    #     print('Picard add read groups failed; Exiting program')
+    #     sys.exit()
 
     #Mark PCR duplicates
     dup_path = '{0}/{1}_MD.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
@@ -120,11 +121,11 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
                 'O='+dup_path, 'METRICS_FILE='+met_path, 'REMOVE_DUPLICATES=false', 
                 'ASSUME_SORTED=true', 'CREATE_INDEX=true']
     
-    mdrun = subprocess.Popen(mdcmd, shell=False)
-    mdrun.wait()
-    if mdrun.returncode != 0:
-        print('Picard mark duplicate failed; Exiting program')
-        sys.exit()
+    # mdrun = subprocess.Popen(mdcmd, shell=False)
+    # mdrun.wait()
+    # if mdrun.returncode != 0:
+    #     print('Picard mark duplicate failed; Exiting program')
+    #     sys.exit()
 
     #Fix mate information
     fix_path = '{0}/{1}_FM.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
@@ -132,12 +133,12 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
                 'I='+dup_path, 'O='+fix_path, 'ASSUME_SORTED=true', 'ADD_MATE_CIGAR=true',
                 'CREATE_INDEX=true']
 
-    frun = subprocess.Popen(fcmd, shell=False)
-    frun.wait()
+    # frun = subprocess.Popen(fcmd, shell=False)
+    # frun.wait()
     
-    if frun.returncode != 0:
-        print('Picard fix mate information failed; Exiting program')
-        sys.exit()
+    # if frun.returncode != 0:
+    #     print('Picard fix mate information failed; Exiting program')
+    #     sys.exit()
    
     #Run realigner target creator
     interval_path = '{0}/{1}.intervals'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0]) 
@@ -145,12 +146,12 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
                      interval_path, '-nt', '1', '-I', fix_path, '-R', ref_path, '-known',
                      dbsnp_path]
     
-    trrun = subprocess.Popen(trcmd, shell=False)
-    trrun.wait()
+    # trrun = subprocess.Popen(trcmd, shell=False)
+    # trrun.wait()
     
-    if trrun.returncode != 0:
-        print('Realigner Target creator failed; Exiting program')
-        sys.exit()
+    # if trrun.returncode != 0:
+    #     print('Realigner Target creator failed; Exiting program')
+    #     sys.exit()
      
 
     #Run indel realigner
@@ -159,12 +160,12 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
                 '--targetIntervals', interval_path, '-o', ral_path,
                 '-I', fix_path, '-R', ref_path]
 
-    rerun = subprocess.Popen(recmd, shell=False)
-    rerun.wait()
+    # rerun = subprocess.Popen(recmd, shell=False)
+    # rerun.wait()
 
-    if rerun.returncode != 0:
-        print('Indel realigner creator failed; Exiting program')
-        sys.exit()
+    # if rerun.returncode != 0:
+    #     print('Indel realigner creator failed; Exiting program')
+    #     sys.exit()
 
     #Base quality score recalibration
     bqs_path = '{0}/{1}.table'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
@@ -172,12 +173,12 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
               '-I', ral_path, '-o', bqs_path, '-nct', '1', '-cov', 'ReadGroupCovariate',
               '-knownSites', dbsnp_path]
 
-    bqsrun = subprocess.Popen(bqscmd, shell=False)
-    bqsrun.wait()
+    # bqsrun = subprocess.Popen(bqscmd, shell=False)
+    # bqsrun.wait()
 
-    if bqsrun.returncode != 0:
-        print('Base quality score recalibrator failed; Exiting program')
-        sys.exit()
+    # if bqsrun.returncode != 0:
+    #     print('Base quality score recalibrator failed; Exiting program')
+    #     sys.exit()
     
     #Print Reads (generate final BAM)
     fbam_path = '{0}/{1}_final.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
@@ -187,9 +188,9 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     prrun = subprocess.Popen(prcmd, shell=False)
     prrun.wait()
 
-    if prrun.returncode != 0:
-        print('Print reads failed; Exiting program')
-        sys.exit()
+    # if prrun.returncode != 0:
+    #     print('Print reads failed; Exiting program')
+    #     sys.exit()
         
     #Average and Max coverage calculation from the final BAM file
     #guardant360 set
@@ -199,13 +200,41 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     
     print(covfile_path)
     
-    covrun  = subprocess.Popen(covcmd, shell=False)
-    covrun.wait()
+    # covrun  = subprocess.Popen(covcmd, shell=False)
+    # covrun.wait()
 
-    if covrun.returncode != 0:
-        print('Coverage calculation failed; Exiting program')
-        sys.exit()
+
+    # from subprocess import Popen, PIPE
+    # pipe = Popen(path, stdout=PIPE)
+    # text = pipe.communicate()[0]
     
+    # open bed file
+    # construct region
+    # call samtools depth passing output to a var
+    # process var:
+    #   capture second column to a vector
+    #   calculate mean, median and max coverage (using statistics module)
+    
+    # if covrun.returncode != 0:
+    #     print('Coverage calculation failed; Exiting program')
+    #     sys.exit()
+    
+    filepath = geneset_path
+    with open(filepath) as fp:  
+        line = fp.readline()
+        # cnt = 1
+        while line:
+            tokens = line.split("\t")
+            region = "{}:{}-{}".format(tokens[0],tokens[1],tokens[2])
+            # print("Line {}: {}".format(cnt, line.strip()))
+            print("{}".format(region))
+            line = fp.readline()
+            # cnt += 1
+            
+           
+    covfile_path = '{0}/{1}_{2}_coverage.tsv'.format(out_path, os.path.splitext(os.path.basename(geneset_path))[0], 
+                    os.path.splitext(os.path.basename(sam_path))[0])
+    covcmd       = [samtools, fbam_path, geneset_path, covfile_path]
     
     #Haplotype caller
     vcf_path = '{0}/variants.vcf'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
@@ -213,12 +242,12 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
                 '-I', fbam_path, '--dbsnp', dbsnp_path, '-o', vcf_path, '-nct', '1', 
                 '-gt_mode', 'DISCOVERY']
 
-    hrun = subprocess.Popen(hcmd, shell=False)
-    hrun.wait()
+    # hrun = subprocess.Popen(hcmd, shell=False)
+    # hrun.wait()
     
-    if hrun.returncode != 0:
-        print('Haplotype caller failed; Exiting program')
-        sys.exit()
+    # if hrun.returncode != 0:
+    #     print('Haplotype caller failed; Exiting program')
+    #     sys.exit()
 
 
     print('Variant call pipeline completed')
