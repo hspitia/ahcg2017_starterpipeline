@@ -185,8 +185,8 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     prcmd     = ['java', '-jar', gatk_path, '-T', 'PrintReads', '-R', ref_path, '-I',
                  ral_path, '-o', fbam_path, '-BQSR', bqs_path, '-nct', '1']
 
-    prrun = subprocess.Popen(prcmd, shell=False)
-    prrun.wait()
+    # prrun = subprocess.Popen(prcmd, shell=False)
+    # prrun.wait()
 
     # if prrun.returncode != 0:
     #     print('Print reads failed; Exiting program')
