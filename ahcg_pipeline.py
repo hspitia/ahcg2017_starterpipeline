@@ -5,9 +5,41 @@ import glob
 import logging
 import argparse
 import subprocess
-import statistics
+import statistics as st
 
-def main(trim_path, bowtie_path, picard_path, gatk_path, 
+def calculateCoverageStats(bamFilePath, bedFilePath, outFilePath, samtoolsPath):
+    covFile  = open(outFilePath, 'w')
+    covFile.write("#chr\tstart\tstop\tname\tscore\tstrand\tmedian_cov\tavg_cov\tmax_cov\n")
+    with open(bedFilePath) as fp:  
+        line = fp.readline()
+        # cnt = 1
+        while line:
+            tokens     = line.split("\t")
+            region     = "{}:{}-{}".format(tokens[0],tokens[1],tokens[2])
+            samcmd     = [samtoolsPath, "depth", "-r", region, bamFilePath]
+            print("{}".format(" ".join(samcmd)))
+            covLines   = subprocess.check_output(samcmd, universal_newlines=True).splitlines()
+            perBaseCov = []
+            for l in covLines:
+                tokens = l.split("\t")
+                perBaseCov.append(int(tokens[2]))
+            
+            covMedian  = 0
+            covAverage = 0
+            covMax     = 0
+
+            if len(perBaseCov) > 0:
+                covMedian  = st.median(perBaseCov)
+                covAverage = st.mean(perBaseCov)
+                covMax     = max(perBaseCov)
+            
+            # print("{0}\t{1:.2f}\t{2:.2f}\t{3}\n".format(line.rstrip(), covMedian, covAverage, covMax))
+            covFile.write("{0}\t{1:.2f}\t{2:.2f}\t{3}\n".format(line.rstrip(), covMedian, covAverage, covMax))
+                
+            line = fp.readline()
+            
+
+def main(trim_path, bowtie_path, picard_path, gatk_path, samtools_path,
          covscript_path, input_path, index_path, dbsnp_path, 
          adapter_path, ref_path, geneset_path, out_path):
     
@@ -24,6 +56,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     adpater_path   = os.path.abspath(adapter_path)
     geneset_path   = os.path.abspath(geneset_path)    # guardant360 gen set BED file to calculate coverage
     covscript_path = os.path.abspath(covscript_path)  # bash script to calculate average and max coverage
+    samtools_path  = os.path.abspath(samtools_path)  
     
     # print(input_path)
     
@@ -39,6 +72,10 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
 
     if not os.path.exists(gatk_path):
         raise FileNotFoundError('Gatk not found at {0}'.format(gatk_path))
+        
+    if not os.path.exists(samtools_path):
+        raise FileNotFoundError('Samtools not found at {0}'.format(samtools_path))
+
 
     for files in input_path:
         if not os.path.exists(files):
@@ -74,7 +111,8 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     tread2 = '{1}_trimmed.fq'.format(out_path, os.path.splitext(read2)[0])
     sread1 = '{1}_unused.fq'.format(out_path, os.path.splitext(read1)[0])
     sread2 = '{1}_unused.fq'.format(out_path, os.path.splitext(read2)[0])
-
+    
+    # =========================================================================
     tcmd = ['java', '-jar', trim_path, 'PE', '-phred33', read1, read2, tread1,
             sread1, tread2, sread2, 'ILLUMINACLIP:{0}:2:30:10'.format(adapter_path),
             'LEADING:0', 'TRAILING:0', 'SLIDINGWINDOW:4:15', 'MINLEN:36']
@@ -86,7 +124,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #     print('Fastq trimming failed; Exiting program')
     #     sys.exit()
          
-
+    # =========================================================================
     #Align the reads using bowtie
     sam_path = '{1}.sam'.format(out_path, os.path.splitext(tread1)[0])
     bcmd     = [ bowtie_path, '-x', index_path, '-S', sam_path, '-p', '1' , '-1',
@@ -99,6 +137,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #     print('Bowtie failed; Exiting program')
     #     sys.exit()
 
+    # =========================================================================
     #Add read group information
     add_path = '{0}/{1}_RG.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
     acmd     = ['java', '-Xmx1g', '-jar', picard_path, 'AddOrReplaceReadGroups',
@@ -114,6 +153,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #     print('Picard add read groups failed; Exiting program')
     #     sys.exit()
 
+    # =========================================================================
     #Mark PCR duplicates
     dup_path = '{0}/{1}_MD.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
     met_path = '{0}/{1}_MD.metrics'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
@@ -127,6 +167,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #     print('Picard mark duplicate failed; Exiting program')
     #     sys.exit()
 
+    # =========================================================================
     #Fix mate information
     fix_path = '{0}/{1}_FM.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
     fcmd     = ['java', '-Xmx1g', '-jar', picard_path, 'FixMateInformation',
@@ -140,6 +181,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #     print('Picard fix mate information failed; Exiting program')
     #     sys.exit()
    
+    # =========================================================================
     #Run realigner target creator
     interval_path = '{0}/{1}.intervals'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0]) 
     trcmd         = ['java', '-jar', gatk_path, '-T', 'RealignerTargetCreator', '-o',
@@ -154,6 +196,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #     sys.exit()
      
 
+    # =========================================================================
     #Run indel realigner
     ral_path = '{0}/{1}_IR.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
     recmd    = ['java', '-jar', gatk_path, '-T', 'IndelRealigner',
@@ -167,6 +210,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #     print('Indel realigner creator failed; Exiting program')
     #     sys.exit()
 
+    # =========================================================================
     #Base quality score recalibration
     bqs_path = '{0}/{1}.table'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
     bqscmd = ['java', '-jar', gatk_path, '-T', 'BaseRecalibrator', '-R', ref_path,
@@ -180,75 +224,64 @@ def main(trim_path, bowtie_path, picard_path, gatk_path,
     #     print('Base quality score recalibrator failed; Exiting program')
     #     sys.exit()
     
+    # =========================================================================
     #Print Reads (generate final BAM)
     fbam_path = '{0}/{1}_final.bam'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
     prcmd     = ['java', '-jar', gatk_path, '-T', 'PrintReads', '-R', ref_path, '-I',
                  ral_path, '-o', fbam_path, '-BQSR', bqs_path, '-nct', '1']
 
-    # prrun = subprocess.Popen(prcmd, shell=False)
-    # prrun.wait()
+    prrun = subprocess.Popen(prcmd, shell=False)
+    prrun.wait()
 
-    # if prrun.returncode != 0:
-    #     print('Print reads failed; Exiting program')
-    #     sys.exit()
-        
-    #Average and Max coverage calculation from the final BAM file
-    #guardant360 set
+    if prrun.returncode != 0:
+        print('Print reads failed; Exiting program')
+        sys.exit()
+    
+    # =========================================================================
+    # Coverage stats calculation from the final BAM file
     covfile_path = '{0}/{1}_{2}_coverage.tsv'.format(out_path, os.path.splitext(os.path.basename(geneset_path))[0], 
                     os.path.splitext(os.path.basename(sam_path))[0])
-    covcmd       = [covscript_path, fbam_path, geneset_path, covfile_path]
     
-    print(covfile_path)
+    calculateCoverageStats(fbam_path, geneset_path, covfile_path, samtools_path)
+    print("Coverage out file: {}".format(covfile_path))
     
-    # covrun  = subprocess.Popen(covcmd, shell=False)
-    # covrun.wait()
-
-
-    # from subprocess import Popen, PIPE
-    # pipe = Popen(path, stdout=PIPE)
-    # text = pipe.communicate()[0]
-    
-    # open bed file
-    # construct region
-    # call samtools depth passing output to a var
-    # process var:
-    #   capture second column to a vector
-    #   calculate mean, median and max coverage (using statistics module)
-    
-    # if covrun.returncode != 0:
-    #     print('Coverage calculation failed; Exiting program')
-    #     sys.exit()
-    
-    filepath = geneset_path
-    with open(filepath) as fp:  
-        line = fp.readline()
-        # cnt = 1
-        while line:
-            tokens = line.split("\t")
-            region = "{}:{}-{}".format(tokens[0],tokens[1],tokens[2])
-            # print("Line {}: {}".format(cnt, line.strip()))
-            print("{}".format(region))
-            line = fp.readline()
-            # cnt += 1
-            
-           
-    covfile_path = '{0}/{1}_{2}_coverage.tsv'.format(out_path, os.path.splitext(os.path.basename(geneset_path))[0], 
-                    os.path.splitext(os.path.basename(sam_path))[0])
-    covcmd       = [samtools, fbam_path, geneset_path, covfile_path]
-    
+    # =========================================================================
     #Haplotype caller
     vcf_path = '{0}/variants.vcf'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
     hcmd     = ['java', '-jar', gatk_path, '-T', 'HaplotypeCaller', '-R', ref_path,
                 '-I', fbam_path, '--dbsnp', dbsnp_path, '-o', vcf_path, '-nct', '1', 
                 '-gt_mode', 'DISCOVERY']
-
+            
     # hrun = subprocess.Popen(hcmd, shell=False)
     # hrun.wait()
     
     # if hrun.returncode != 0:
     #     print('Haplotype caller failed; Exiting program')
     #     sys.exit()
-
+    
+    # =========================================================================
+    # Variants filtering step
+    # Command to filter VCF variants by coverage and quality
+    # gatk \
+    # -T SelectVariants \
+    # -R <reference_genome> \
+    # -V <variants_file> \
+    # -select "DP >= 25 && QUAL >= 30" \
+    # -o <output_file>
+    #
+    # Variants filtering
+    vcf_filtered_path = '{0}/variants.filered.vcf'.format(out_path, os.path.splitext(os.path.basename(sam_path))[0])
+    fcmd     = ['java', '-jar', gatk_path, '-T', 'SelectVariants', '-R', ref_path, 
+                '-V', vcf_path, '-select', '"DP >= 25 && QUAL >= 30"', 
+                '-o', vcf_filtered_path]
+            
+    frun = subprocess.Popen(fcmd, shell=False)
+    frun.wait()
+    
+    if frun.returncode != 0:
+        print('Variants fFiltering failed; Exiting program')
+        sys.exit()
+    # ====================================================================
 
     print('Variant call pipeline completed')
     print('VCF file can be found at {0}'.format(vcf_path))
@@ -261,6 +294,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--bowtie', dest='bowtie_path', type=str, help='Path to Bowtie')
     parser.add_argument('-p', '--picard', dest='picard_path', type=str, help='Path to Picard')
     parser.add_argument('-g', '--gatk', dest='gatk_path', type=str, help='Path to GATK')
+    parser.add_argument('-m', '--samtools', dest='samtools_path', type=str, help='Path to Samtools')
     parser.add_argument('-c', '--covscript', dest='covscript_path', type=str, help='Path to coverage calculation script')
     parser.add_argument('-i', '--inputs', dest='input_path', nargs='+', type=str, help='Path to paired end read files (space sparated)')
     parser.add_argument('-w', '--index', dest='index_path', type=str, help='Path to Reference bowtie index')
@@ -279,6 +313,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
 
-main(args.trim_path, args.bowtie_path, args.picard_path, args.gatk_path,
+main(args.trim_path, args.bowtie_path, args.picard_path, args.gatk_path, args.samtools_path,
      args.covscript_path, args.input_path, args.index_path, args.dbsnp_path, 
      args.adapter_path, args.ref_path, args.geneset_path, args.out_path)
+
