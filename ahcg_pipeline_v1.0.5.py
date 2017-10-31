@@ -12,10 +12,12 @@ def calculateCoverageStats(bamFilePath, bedFilePath, outFilePath, samtoolsPath):
     covFile.write("#chr\tstart\tstop\tname\tscore\tstrand\tmedian_cov\tavg_cov\tmax_cov\n")
     with open(bedFilePath) as fp:  
         line = fp.readline()
+        # cnt = 1
         while line:
             tokens     = line.split("\t")
             region     = "{}:{}-{}".format(tokens[0],tokens[1],tokens[2])
             samcmd     = [samtoolsPath, "depth", "-r", region, bamFilePath]
+            # print("{}".format(" ".join(samcmd)))
             covLines   = subprocess.check_output(samcmd, universal_newlines=True).splitlines()
             perBaseCov = []
             for l in covLines:
@@ -109,6 +111,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path, samtools_path,
     sread1 = '{1}_unused.fq'.format(out_path, os.path.splitext(read1)[0])
     sread2 = '{1}_unused.fq'.format(out_path, os.path.splitext(read2)[0])
     
+    # =========================================================================
     tcmd = ['java', '-jar', trim_path, 'PE', '-phred33', read1, read2, tread1,
             sread1, tread2, sread2, 'ILLUMINACLIP:{0}:2:30:10'.format(adapter_path),
             'LEADING:0', 'TRAILING:0', 'SLIDINGWINDOW:4:15', 'MINLEN:36']
@@ -252,7 +255,6 @@ def main(trim_path, bowtie_path, picard_path, gatk_path, samtools_path,
     if hrun.returncode != 0:
         print('Haplotype caller failed; Exiting program')
         sys.exit()
-    
     # =========================================================================
     # Variants filtering step
     # Command to filter VCF variants by coverage and quality
@@ -269,7 +271,7 @@ def main(trim_path, bowtie_path, picard_path, gatk_path, samtools_path,
                 '-V', vcf_path, '-select', 'DP>=25 && QUAL>=30', 
                 '-o', vcf_filtered_path]
             
-    print("\n{}\n".format(" ".join(fcmd)))    
+    # print("\n{}\n".format(" ".join(fcmd)))    
     frun = subprocess.Popen(fcmd, shell=False)
     frun.wait()
     
