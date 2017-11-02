@@ -1,0 +1,30 @@
+###For more options see: http://boevalab.com/FREEC/tutorial.html#CONFIG ###
+
+[general]
+chrLenFile = /data2/AHCG2017FALL/reference_genome/genome.fa.fai
+window = 0
+ploidy = 2,3
+outputDir = /data2/AHCG2017FALL/output3
+
+#sex=XY
+breakPointType=4
+chrFiles =  /data2/AHCG2017FALL/reference_genome/chroms
+
+
+maxThreads=6
+
+breakPointThreshold=1.2
+noisyData=TRUE
+printNA=FALSE
+
+readCountThreshold=50
+
+samtools=/data2/AHCG2017FALL/bin/samtools-1.5/samtools
+
+[sample]
+
+mateFile = /data2/AHCG2017FALL/output3/Patient4_R1_trimmed_final.bam
+inputFormat = BAM
+mateOrientation = 0
+
+
