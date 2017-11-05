@@ -42,6 +42,8 @@ def calculateCoverageStats(bamFilePath, bedFilePath, outFilePath, samtoolsPath):
                 covMedian, covAverage, covMax))
                 
             line = fp.readline()
+    
+    covFile.close()
             
 # ====================================================================
 def checkTool(key, name, confOptions):
