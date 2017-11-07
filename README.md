@@ -5,11 +5,14 @@ Variant calling pipeline for genomic data analysis. This pipeline is part of the
 
 ## Requirements
 
-1. [Python3 - version 3.4.1](https://www.python.org/download/releases/3.4.1/)
-2. [Trimmomatic - version 0.36](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip)
-3. [Bowtie2 - version 2.3.2](https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.2)
-4. [Picard tools - version 2.11.0](https://github.com/broadinstitute/picard/releases/download/2.11.0/picard.jar)
-5. [GATK - version 3.8](https://software.broadinstitute.org/gatk/download/)
+1. [Python3 - v3.4.1](https://www.python.org/download/releases/3.4.1/)
+2. [Trimmomatic - v0.36](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip)
+3. [Bowtie2 - v2.3.2](https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.3.2)
+4. [Picard tools - v2.11.0](https://github.com/broadinstitute/picard/releases/download/2.11.0/picard.jar)
+5. [GATK - v3.8](https://software.broadinstitute.org/gatk/download/)
+6. [Samtools - v1.6](https://downloads.sourceforge.net/project/samtools/samtools/1.6/samtools-1.6.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fsamtools%2F&ts=1510018121&use_mirror=phoenixnap)
+7. [Control-FREEC v11.0](https://github.com/BoevaLab/FREEC/archive/v11.0.tar.gz)
+8. [R language - v3.3.2](https://cran.cnr.berkeley.edu/)
 
 ## Reference genome
 
@@ -35,6 +38,60 @@ To access help use the following command:
 ```{sh}
 python3 ahcg_pipeline.py -h
 ```
+
+## Configuration file
+
+### `[tools]` section
+
+| Option        | Description                                                                                                |
+|---------------|------------------------------------------------------------------------------------------------------------|
+| `bowtie2`     | Path to Bowtie2 executable                                                                                 |
+| `freec`       | Path to Control-FREEC executable                                                                           |
+| `gatk`        | Path to GATK jar file                                                                                      |
+| `makegraph`   | Path to Control-FREEC `makeGraph.R` script (Usually in the folder `scripts` at the Control-FREEC root dir) |
+| `picard`      | Path to Picard jar file                                                                                    |
+| `samtools`    | Path to Samtools executable                                                                                |
+| `trimmomatic` | Path to Trimmomatic jar file                                                                               |
+
+### `[data]` section
+
+| Option       | Description                                                                  |
+|--------------|------------------------------------------------------------------------------|
+| `adapters`   | Path to adapters fasta file to perform sequence trimming with Trimmomatic    |
+| `chrlenfile` | Path to file with chromosome lengths for Control-FREEC                       |
+| `chrfiles`   | Path to the directory with chromosomes fasta files for Control-FREEC         |
+| `dbsnp`      | Path to dbSNP vcf file for GATK                                              |
+| `geneset`    | Path to the bed file with genes of interest to calculate coverage statistics |
+| `index`      | Path to the prefix of the reference Bowtie2 index                            |
+| `reference`  | Path to the reference genome fasta file                                      |
+| `inputfiles` | List of paired end read files (comma sparated)                               |
+| `outputdir`  | Path to the output directory                                                 |
+
+### Example of config file
+
+```
+[data]
+adapters        = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa
+chrlenfile      = /data2/AHCG2017FALL/reference_genome/chromosomeSizes.txt
+chrfiles        = /data2/AHCG2017FALL/reference_genome/chroms/
+dbsnp           = /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz
+geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
+index           = /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome
+reference       = /data2/AHCG2017FALL/reference_genome/genome.fa
+inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
+outputdir       = /data2/AHCG2017FALL/output5
+
+[tools]
+bowtie2         = /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2
+freec           = /data2/AHCG2017FALL/bin/FREEC/src/freec
+gatk            = /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar
+java            = /data2/AHCG2017FALL/bin/java-1.8/bin/java
+makegraph       = /data2/AHCG2017FALL/bin/FREEC/scripts/makeGraph.R
+picard          = /data2/AHCG2017FALL/bin/picard/picard.jar
+samtools        = /data2/AHCG2017FALL/bin/samtools-1.5/samtools
+trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
+```
+
 ##  Execution example
 
 ### Building directory structure
@@ -60,17 +117,7 @@ wget ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Homo_sapiens/NCBI/GRCh38/Homo
 ###  Running the pipeline
 
 ```{sh}
-./ahcg_pipeline_v1.0.1.py \
--t /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar  \
--b /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2 \
--p /data2/AHCG2017FALL/bin/picard/picard.jar \
--g /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836 \
--i /data2/AHCG2017FALL/data \
--w /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome \
--d /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz \
--r /data2/AHCG2017FALL/reference_genome/genome.fa \
--a /home/hfen3/adapters.fa \
--o output
+./ahcg_pipeline_v1.0.1.py -c config_file.txt
 ```
 
 
