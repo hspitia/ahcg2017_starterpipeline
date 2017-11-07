@@ -18,7 +18,7 @@
 #define HAVE_CURSES_COLOR 1
 
 /* Define to 1 if library supports X/Open Enhanced functions */
-/* #undef HAVE_CURSES_ENHANCED */
+#define HAVE_CURSES_ENHANCED 1
 
 /* Define to 1 if <curses.h> is present */
 /* #undef HAVE_CURSES_H */
@@ -30,13 +30,13 @@
 #define HAVE_LIBZ 1
 
 /* Define to 1 if the Ncurses library is present */
-#define HAVE_NCURSES 1
+/* #undef HAVE_NCURSES */
 
 /* Define to 1 if the NcursesW library is present */
-/* #undef HAVE_NCURSESW */
+#define HAVE_NCURSESW 1
 
 /* Define to 1 if <ncursesw/curses.h> is present */
-/* #undef HAVE_NCURSESW_CURSES_H */
+#define HAVE_NCURSESW_CURSES_H 1
 
 /* Define to 1 if <ncursesw.h> is present */
 /* #undef HAVE_NCURSESW_H */

@@ -28,7 +28,7 @@
 # in the Makefile to reflect your configuration choices.  If you don't run
 # configure, the main Makefile contains suitable conservative defaults.
 
-prefix       = /home/hspitia/.software
+prefix       = /usr/local
 exec_prefix  = ${prefix}
 bindir       = ${exec_prefix}/bin
 datarootdir  = ${prefix}/share
@@ -51,4 +51,4 @@ HTSLIB_CPPFLAGS = -Ihtslib-1.6
 #HTSLIB_LDFLAGS = -Lhtslib-1.6
 #HTSLIB_LIB = -lhts
 
-CURSES_LIB = -lncurses
+CURSES_LIB = -lncursesw

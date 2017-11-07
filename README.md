@@ -121,3 +121,4 @@ wget ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Homo_sapiens/NCBI/GRCh38/Homo
 ```
 
 
+
