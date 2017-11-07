@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import statistics as st
 import configparser as cp
+import textwrap
 
 # ==============================================================================
 def calculateCoverageStats(bamFilePath, bedFilePath, outFilePath, samtoolsPath):
@@ -43,7 +44,6 @@ def calculateCoverageStats(bamFilePath, bedFilePath, outFilePath, samtoolsPath):
             line = fp.readline()
     
     covFile.close()
-            
 # ==============================================================================
 def checkTool(key, name, confOptions):
     """Check if the executable file key defined in confOptions or present the
@@ -100,10 +100,10 @@ def checkDataOption(key, name, confOptions):
         raise FileNotFoundError('{} ({}) not provided in the config file'.format(name, key))
         # sys.stderr.write('ERROR: {} ({}) not found not provided in the config file\n'.format(name, key))
         # sys.exit(1)
-    
 # ==============================================================================
 def createControlFreecConfigFile(bamPath, confOptions, freecConfPath):
-    freecConf = cp.ConfigParser()
+    '''Creates a config file for Control-FREEC based on files generated in this
+    pipeline'''
     freecConf = cp.RawConfigParser()
     freecConf.optionxform = lambda option: option
     freecConf['general'] = {
@@ -239,7 +239,7 @@ def main(config_path):
     
     if frun.returncode != 0:
         print('Picard fix mate information failed; Exiting program')
-        sys.exit()
+        sys.exit(1)
     
     # ==========================================================================
     # Run realigner target creator
@@ -255,7 +255,7 @@ def main(config_path):
     
     if trrun.returncode != 0:
         print('Realigner Target creator failed; Exiting program')
-        sys.exit()
+        sys.exit(1)
 
     # =========================================================================
     # Run indel realigner
@@ -270,7 +270,7 @@ def main(config_path):
 
     if rerun.returncode != 0:
         print('Indel realigner creator failed; Exiting program')
-        sys.exit()
+        sys.exit(1)
 
     # ==========================================================================
     # Base quality score recalibration
@@ -286,7 +286,7 @@ def main(config_path):
 
     if bqsrun.returncode != 0:
         print('Base quality score recalibrator failed; Exiting program')
-        sys.exit()
+        sys.exit(1)
     
     # ==========================================================================
     # Print Reads (generate final BAM)
@@ -301,7 +301,7 @@ def main(config_path):
 
     if prrun.returncode != 0:
         print('Print reads failed; Exiting program')
-        sys.exit()
+        sys.exit(1)
     
     # ==========================================================================
     # Coverage stats calculation from the final BAM file
@@ -327,7 +327,7 @@ def main(config_path):
     
     if hrun.returncode != 0:
         print('Haplotype caller failed; Exiting program')
-        sys.exit()
+        sys.exit(1)
     
     # ==========================================================================
     # Variants filtering step
@@ -392,16 +392,47 @@ def main(config_path):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawTextHelpFormatter,
+        epilog = textwrap.dedent('''
+config file format and options:
+  [tools]
+  bowtie2     = <Path to Bowtie2 executable>
+  freec       = <Path to Control-FREEC executable>
+  gatk        = <Path to GATK jar file>
+  makegraph   = <Path to Control-FREEC makeGraph.R script (Usually in the folder scripts at the Control-FREEC root dir)>
+  picard      = <Path to Picard jar file>
+  samtools    = <Path to Samtools executable>
+  trimmomatic = <Path to Trimmomatic jar file>
+  
+  [data]
+  adapters    = <Path to adapters fasta file to perform sequence trimming with Trimmomatic>
+  chrlenfile  = <Path to file with chromosome lengths for Control-FREEC>
+  chrfiles    = <Path to the directory with chromosomes fasta files for Control-FREEC>
+  dbsnp       = <Path to dbSNP vcf file for GATK>
+  geneset     = <Path to the bed file with genes of interest to calculate coverage statistics>
+  index       = <Path to the prefix of the reference Bowtie2 index>
+  reference   = <Path to the reference genome fasta file>
+  inputfiles  = <List of paired end read files (comma sparated)>
+  outputdir   = <Path to the output directory>
+  
+config file details:
+  - Sections [tools] and [data] are required
+  - All the options are required except for those that correspond to executable
+    files 
+  - Options for executable files (bowtie2, freec, and samtools) can be omitted 
+    if they are available in the system through the $PATH variable.
+'''))
     parser.add_argument('-c', '--config', dest = 'config_path', type = str, 
         help = 'Path to config file')
+        
     
     # Enrichment kit (Nextera Enrichment Capture kit)
     # Download samples given an SRA accession
     
     if len(sys.argv) == 1:
         parser.print_help()
-        print('----------------------------------------------------------------------------')
+        print('--------------------------------------------------------------------------------')
         print('{0} - ERROR: One or more required arguments are missing.\n'.format(parser.prog))
         sys.exit(1)
     

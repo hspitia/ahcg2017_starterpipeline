@@ -1,0 +1,23 @@
+[data]
+inputfiles      = /data2/AHCG2017FALL/data4/SRR2530741_1.fastq,/data2/AHCG2017FALL/data4/SRR2530741_2.fastq
+geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
+outputdir       = /data2/AHCG2017FALL/output4
+
+adapters        = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa
+chrlenfile      = /data2/AHCG2017FALL/reference_genome/chromosomeSizes.txt
+chrfiles        = /data2/AHCG2017FALL/reference_genome/chroms/
+dbsnp           = /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz
+index           = /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome
+reference       = /data2/AHCG2017FALL/reference_genome/genome.fa
+
+
+[tools]
+bowtie2         = /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2
+freec           = /data2/AHCG2017FALL/bin/FREEC/src/freec
+gatk            = /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar
+java            = /data2/AHCG2017FALL/bin/java-1.8/bin/java
+makegraph       = /data2/AHCG2017FALL/bin/FREEC/scripts/makeGraph.R
+picard          = /data2/AHCG2017FALL/bin/picard/picard.jar
+samtools        = /data2/AHCG2017FALL/bin/samtools-1.5/samtools
+trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
+
