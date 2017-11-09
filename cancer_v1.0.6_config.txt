@@ -1,5 +1,6 @@
 [data]
-inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
+# inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
+sraid           = SRR2530742
 geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
 outputdir       = /data2/AHCG2017FALL/output5
 
@@ -9,7 +10,6 @@ chrfiles        = /data2/AHCG2017FALL/reference_genome/chroms/
 dbsnp           = /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz
 index           = /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome
 reference       = /data2/AHCG2017FALL/reference_genome/genome.fa
-
 
 [tools]
 bowtie2         = /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2

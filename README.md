@@ -41,6 +41,20 @@ python3 ahcg_pipeline.py -h
 
 ## Configuration file
 
+### `[data]` section
+
+| Option       | Description                                                                  |
+|--------------|------------------------------------------------------------------------------|
+| `inputfiles` | List of paired end read files (comma sparated)                               |
+| `geneset`    | Path to the bed file with genes of interest to calculate coverage statistics |
+| `outputdir`  | Path to the output directory                                                 |
+| `adapters`   | Path to adapters fasta file to perform sequence trimming with Trimmomatic    |
+| `chrlenfile` | Path to file with chromosome lengths for Control-FREEC                       |
+| `chrfiles`   | Path to the directory with chromosomes fasta files for Control-FREEC         |
+| `dbsnp`      | Path to dbSNP vcf file for GATK                                              |
+| `index`      | Path to the prefix of the reference Bowtie2 index                            |
+| `reference`  | Path to the reference genome fasta file                                      |
+
 ### `[tools]` section
 
 | Option        | Description                                                                                                |
@@ -53,33 +67,20 @@ python3 ahcg_pipeline.py -h
 | `samtools`    | Path to Samtools executable                                                                                |
 | `trimmomatic` | Path to Trimmomatic jar file                                                                               |
 
-### `[data]` section
-
-| Option       | Description                                                                  |
-|--------------|------------------------------------------------------------------------------|
-| `adapters`   | Path to adapters fasta file to perform sequence trimming with Trimmomatic    |
-| `chrlenfile` | Path to file with chromosome lengths for Control-FREEC                       |
-| `chrfiles`   | Path to the directory with chromosomes fasta files for Control-FREEC         |
-| `dbsnp`      | Path to dbSNP vcf file for GATK                                              |
-| `geneset`    | Path to the bed file with genes of interest to calculate coverage statistics |
-| `index`      | Path to the prefix of the reference Bowtie2 index                            |
-| `reference`  | Path to the reference genome fasta file                                      |
-| `inputfiles` | List of paired end read files (comma sparated)                               |
-| `outputdir`  | Path to the output directory                                                 |
 
 ### Example of config file
 
 ```
 [data]
+inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
+geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
+outputdir       = /data2/AHCG2017FALL/output5
 adapters        = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa
 chrlenfile      = /data2/AHCG2017FALL/reference_genome/chromosomeSizes.txt
 chrfiles        = /data2/AHCG2017FALL/reference_genome/chroms/
 dbsnp           = /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz
-geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
 index           = /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome
 reference       = /data2/AHCG2017FALL/reference_genome/genome.fa
-inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
-outputdir       = /data2/AHCG2017FALL/output5
 
 [tools]
 bowtie2         = /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2

@@ -45,6 +45,11 @@ def calculateCoverageStats(bamFilePath, bedFilePath, outFilePath, samtoolsPath):
     
     covFile.close()
 # ==============================================================================
+def getlist(option, sep=',', chars=None):
+    """Return a list from a ConfigParser option. By default, 
+       split on a comma and strip whitespaces."""
+    return [ chunk.strip(chars) for chunk in option.split(sep) ]
+# ==============================================================================
 def checkTool(key, name, confOptions):
     """Check if the executable file key defined in confOptions or present the
     system PATH, exists"""
@@ -63,43 +68,25 @@ def checkTool(key, name, confOptions):
             # sys.stderr.write('ERROR: {} not found in system and not provided in the config file.\n'.format(name))
             # sys.exit(1)
 # ==============================================================================
-def getlist(option, sep=',', chars=None):
-    """Return a list from a ConfigParser option. By default, 
-       split on a comma and strip whitespaces."""
-    return [ chunk.strip(chars) for chunk in option.split(sep) ]
-# ==============================================================================
-def checkDataOption(key, name, confOptions):
+def checkDataFile(key, name, confOptions):
     """Check if the data file key defined in confOptions, exists"""
     if key in confOptions:
-        if key == 'inputfiles':
-            files = getlist(confOptions[key])
-            files = [os.path.abspath(fs) for fs in files]
-            for f in files:
-                if not os.path.exists(f):
-                    raise FileNotFoundError('Fastq file not found at {}'.format(f))
-                    # sys.stderr.write('ERROR: Fastq file not found at {}\n'.format(f))
-                    # sys.exit(1)
-        elif key == 'index':
+        confOptions[key] = os.path.abspath(confOptions[key])
+        if key == 'index':
             indicies = glob.glob('{0}.*.bt2'.format(confOptions[key]))
             if len(indicies) == 0:
-                raise FileNotFoundError('Bowtie index not found at {0}'.format(confOptions[key]))
-        elif key == 'outputdir':
-            if not os.path.exists(confOptions['outputdir']):
-                os.mkdir(confOptions['outputdir'])
+                sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
+                sys.exit(1)
+                # raise FileNotFoundError('Bowtie index not found at {0}'.format(confOptions[key]))
         else:
-            confOptions[key] = os.path.abspath(confOptions[key])
             if not os.path.exists(confOptions[key]):
-                raise FileNotFoundError('{} not found at {}'.format(name, confOptions[key]))
-                # sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
-                # sys.exit(1)
-    elif key == 'outputdir':
-        confOptions['outputdir'] = 'out'
-        if not os.path.exists(confOptions['outputdir']):
-            os.mkdir(confOptions['outputdir'])
+                sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
+                sys.exit(1)
+                # raise FileNotFoundError('{} not found at {}'.format(name, confOptions[key]))
     else:
-        raise FileNotFoundError('{} ({}) not provided in the config file'.format(name, key))
-        # sys.stderr.write('ERROR: {} ({}) not found not provided in the config file\n'.format(name, key))
-        # sys.exit(1)
+        # raise FileNotFoundError('{} ({}) not provided in the config file'.format(name, key))
+        sys.stderr.write('ERROR: {} ({}) not found not provided in the config file\n'.format(name, key))
+        sys.exit(1)
 # ==============================================================================
 def createControlFreecConfigFile(bamPath, confOptions, freecConfPath):
     '''Creates a config file for Control-FREEC based on files generated in this
@@ -129,52 +116,97 @@ def main(config_path):
     config.read(config_path)
     confTools   = config['tools']
     confData    = config['data']
-    tools = {
+    toolsToCheck = {
         'bowtie2'    : 'Bowtie2',
+        'fastq-dump' : 'fastq-dump (SRA Toolkit)',
         'freec'      : 'Control-FREEC',
         'gatk'       : 'GATK',
-        confTools['java']       : 'Java',
+        'java'       : 'Java',
         'picard'     : 'Picard',
         'samtools'   : 'Samtools',
         'trimmomatic': 'Trimmomatic'
     }
-    data = {
-        'adapters'    : 'Adapters file',
-         'dbsnp'      : 'dbSNP vcf file',
-         'geneset'    : 'Gene set bed file (genes of interest)',
-         'index'      : 'Reference Bowtie index prefix',
-         'inputfiles' : 'Paired end read file list',
-         'outputdir'  : 'Output directory',
-         'reference'  : 'Reference genome file'
+    dataToCheck = {
+        'adapters'   : 'Adapters file',
+        'dbsnp'      : 'dbSNP vcf file',
+        'geneset'    : 'Gene set bed file (genes of interest)',
+        'index'      : 'Reference Bowtie index prefix',
+        'reference'  : 'Reference genome file'
     }
-
+    
+    # ==========================================================================
     # Check for required tools
-    for key in tools:
-        checkTool(key, tools[key], confTools)
-    # Check for required data files
-    for key in data:
-        checkDataOption(key, data[key], confData)
+    for key in toolsToCheck:
+        checkTool(key, toolsToCheck[key], confTools)
+    
+    # Check for required files (other than inputfiles, and outputdir options)
+    for key in dataToCheck:
+        checkDataFile(key, dataToCheck[key], confData)
+    
+    # Check for outputdir option
+    if not 'outputdir' in confData:
+        config['outputdir'] = './out'
+    
+    confData['outputdir'] = os.path.abspath(confData['outputdir'])
+    
+    # Create the output directory
+    if not os.path.exists(confData['outputdir']):
+        os.mkdir(confData['outputdir'])
+    
+    # Check for input files (inputfiles or sraid options)
+    if 'inputfiles' in confData:
+        files = getlist(config[key])
+        files = [os.path.abspath(fs) for fs in files]
+        for f in files:
+            if not os.path.exists(f):
+                sys.stderr.write('ERROR: Fastq file not found at {}\n'.format(f))
+                sys.exit(1)
+    elif 'sraid' in confData:
+        # Download SRA sample
+        fqdumpCmd = ['fastq-dump', '--split-files', '-O', confData['outputdir'], confData['sraid']]
+        print("INFO: Downloading SRA sample {}".format(confData['sraid']))
+        # fqDumpRun = subprocess.Popen(fqdumpCmd, shell=False)
+        # fqDumpRun.wait()
         
+        # if fqDumpRun.returncode != 0:
+        #     sys.stderr.write('SRA sample download failed; Exiting program\n')
+        #     sys.exit(1)
+            
+        print("INFO: SRA sample {} downloaded to {}\n".format(confData['sraid'], confData['outputdir']))
+    else:
+        sys.stderr.write('ERROR: inputfiles or sraid options not provided in config file. Please specify one of them.\n')
+        sys.exit(1)
+    
+    # ==========================================================================
+    # Define fastq files depending on the source (sraid or inputfiles option)
+    if 'inputfiles' in confData:
+        inputFiles = getlist(confData['inputfiles'])
+        read1      = inputFiles[0]
+        read2      = inputFiles[1]
+    else:
+        read1 = '{}/{}_1.fastq'.format(confData['outputdir'], confData['sraid'])
+        read2 = '{}/{}_2.fastq'.format(confData['outputdir'], confData['sraid'])
+    
     # ==========================================================================
     # Trim fastq files
-    inputFiles = getlist(confData['inputfiles'])
-    read1      = inputFiles[0]
-    read2      = inputFiles[1]
-    tread1     = '{1}_trimmed.fq'.format(confData['outputdir'], os.path.splitext(read1)[0])
-    tread2     = '{1}_trimmed.fq'.format(confData['outputdir'], os.path.splitext(read2)[0])
-    sread1     = '{1}_unused.fq'.format(confData['outputdir'], os.path.splitext(read1)[0])
-    sread2     = '{1}_unused.fq'.format(confData['outputdir'], os.path.splitext(read2)[0])
+    tread1 = '{1}_trimmed.fq'.format(confData['outputdir'], os.path.splitext(read1)[0])
+    tread2 = '{1}_trimmed.fq'.format(confData['outputdir'], os.path.splitext(read2)[0])
+    sread1 = '{1}_unused.fq'.format(confData['outputdir'], os.path.splitext(read1)[0])
+    sread2 = '{1}_unused.fq'.format(confData['outputdir'], os.path.splitext(read2)[0])
     
-    tcmd       = [confTools['java'], '-jar', confTools['trimmomatic'], 'PE', '-phred33', read1, read2, tread1,
-                  sread1, tread2, sread2, 'ILLUMINACLIP:{0}:2:30:10'.format(confData['adapters']),
-                  'LEADING:0', 'TRAILING:0', 'SLIDINGWINDOW:4:15', 'MINLEN:36']
-            
-    trun = subprocess.Popen(tcmd, shell=False)
-    trun.wait() 
+    tcmd   = [confTools['java'], '-jar', confTools['trimmomatic'], 'PE', '-phred33', read1, read2, tread1,
+              sread1, tread2, sread2, 'ILLUMINACLIP:{0}:2:30:10'.format(confData['adapters']),
+              'LEADING:0', 'TRAILING:0', 'SLIDINGWINDOW:4:15', 'MINLEN:36']
     
-    if trun.returncode != 0:
-        sys.stderr.write('Fastq trimming failed; Exiting program')
-        sys.exit(1)
+    # print("INFO: Sequence reads trimming - Started")
+    # trun = subprocess.Popen(tcmd, shell=False)
+    # trun.wait() 
+    
+    # if trun.returncode != 0:
+    #     sys.stderr.write('ERROR: Fastq trimming failed; Exiting program\n')
+    #     sys.exit(1)
+    
+    print("INFO: Sequence reads trimming - Done!\n")
     
     # ==========================================================================
     # Align the reads using Bowtie2
@@ -182,18 +214,20 @@ def main(config_path):
     bcmd     = [ confTools['bowtie2'], '-x', confData['index'], '-S', 
                  sam_path, '-p', '1' , '-1', tread1, '-2', tread2]
     
-    brun = subprocess.Popen(bcmd, shell=False)
-    brun.wait()
+    # print("INFO: Sequence read alignment - Started")
+    # brun = subprocess.Popen(bcmd, shell=False)
+    # brun.wait()
     
-    if brun.returncode != 0:
-        sys.stderr.write('Bowtie2 failed; Exiting program')
-        sys.exit(1)
+    # if brun.returncode != 0:
+    #     sys.stderr.write('ERROR: Bowtie2 failed; Exiting program\n')
+    #     sys.exit(1)
     
+    print("INFO: Sequence read alignment - Done!\n")
     # ==========================================================================
     # Add read group information
     add_path = '{0}/{1}_RG.bam'.format(confData['outputdir'], 
         os.path.splitext(os.path.basename(sam_path))[0])
-    acmd     = [confTools['java'], '-Xmx1g', '-jar', confTools['picard'], 
+    acmd     = [confTools['java'], '-Xmx2g', '-jar', confTools['picard'], 
                 'AddOrReplaceReadGroups', 'I='+sam_path , 'O='+add_path, 
                 'SORT_ORDER=coordinate', 'RGID=Test', 'RGLB=ExomeSeq', 
                 'RGPL=Illumina', 'RGPU=HiSeq2500', 'RGSM=Test', 
@@ -201,47 +235,53 @@ def main(config_path):
                 'RGDT=2016-08-24', 'RGPI=null', 
                 'RGPG=Test', 'RGPM=Test', 'CREATE_INDEX=true']
     
-    arun = subprocess.Popen(acmd, shell=False)
-    arun.wait()
+    # print("INFO: Read group information addition - Started")
+    # arun = subprocess.Popen(acmd, shell=False)
+    # arun.wait()
     
-    if arun.returncode != 0:
-        print('Picard add read groups failed; Exiting program')
-        sys.exit(1)
+    # if arun.returncode != 0:
+    #     print('ERROR: Picard add read groups failed; Exiting program\n')
+    #     sys.exit(1)
     
+    print("INFO: Read group information addition - Done!\n")
     # ==========================================================================
     # Mark PCR duplicates
     dup_path = '{0}/{1}_MD.bam'.format(confData['outputdir'], 
         os.path.splitext(os.path.basename(sam_path))[0])
     met_path = '{0}/{1}_MD.metrics'.format(confData['outputdir'], 
         os.path.splitext(os.path.basename(sam_path))[0])
-    mdcmd    = [confTools['java'], '-Xmx1g', '-jar', confTools['picard'], 'MarkDuplicates',
+    mdcmd    = [confTools['java'], '-Xmx2g', '-jar', confTools['picard'], 'MarkDuplicates',
                 'I='+add_path, 'O='+dup_path, 'METRICS_FILE='+met_path, 
                 'REMOVE_DUPLICATES=false', 'ASSUME_SORTED=true', 
                 'CREATE_INDEX=true']
     
+    print("INFO: Duplicates marking - Started")
     mdrun = subprocess.Popen(mdcmd, shell=False)
     mdrun.wait()
     
     if mdrun.returncode != 0:
-        print('Picard mark duplicate failed; Exiting program')
+        print('ERROR: Picard mark duplicate failed; Exiting program\n')
         sys.exit(1)
 
+    print("INFO: Duplicates marking - Done!\n")
     # ==========================================================================
     # Fix mate information
     fix_path = '{0}/{1}_FM.bam'.format(confData['outputdir'], 
         os.path.splitext(os.path.basename(sam_path))[0])
-    fcmd     = [confTools['java'], '-Xmx1g', '-jar', confTools['picard'], 
+    fcmd     = [confTools['java'], '-Xmx2g', '-jar', confTools['picard'], 
                 'FixMateInformation', 'I='+dup_path, 'O='+fix_path, 
                 'ASSUME_SORTED=true', 'ADD_MATE_CIGAR=true', 
                 'CREATE_INDEX=true']
 
+    print("INFO: Mate information fixing - Started")
     frun = subprocess.Popen(fcmd, shell=False)
     frun.wait()
     
     if frun.returncode != 0:
-        print('Picard fix mate information failed; Exiting program')
+        print('ERROR: Picard fix mate information failed; Exiting program\n')
         sys.exit(1)
     
+    print("INFO: Mate information fixing - Done!\n")
     # ==========================================================================
     # Run realigner target creator
     interval_path = '{0}/{1}.intervals'.format(confData['outputdir'], 
@@ -251,13 +291,15 @@ def main(config_path):
                      '-nt', '1', '-I', fix_path, '-R', confData['reference'], 
                      '-known', confData['dbsnp']]
     
+    print("INFO: Realignment targets creation - Started")
     trrun = subprocess.Popen(trcmd, shell=False)
     trrun.wait()
     
     if trrun.returncode != 0:
-        print('Realigner Target creator failed; Exiting program')
+        print('Realigner Target creator failed; Exiting program\n')
         sys.exit(1)
 
+    print("INFO: Realignment targets creation - Done!\n")
     # =========================================================================
     # Run indel realigner
     ral_path = '{0}/{1}_IR.bam'.format(confData['outputdir'], 
@@ -266,29 +308,33 @@ def main(config_path):
                 '--targetIntervals', interval_path, '-o', ral_path,
                 '-I', fix_path, '-R', confData['reference']]
 
+    print("INFO: Indel realignment - Started\n")
     rerun = subprocess.Popen(recmd, shell=False)
     rerun.wait()
 
     if rerun.returncode != 0:
-        print('Indel realigner creator failed; Exiting program')
+        print('ERROR: Indel realigner creator failed; Exiting program\n')
         sys.exit(1)
 
+    print("INFO: Indel realignment - Done!\n")
     # ==========================================================================
     # Base quality score recalibration
     bqs_path = '{0}/{1}.table'.format(confData['outputdir'], 
         os.path.splitext(os.path.basename(sam_path))[0])
-    bqscmd = [confTools['java'], '-jar', confTools['gatk'], '-T', 'BaseRecalibrator', 
-              '-R', confData['reference'], '-I', ral_path, '-o', bqs_path, 
-              '-nct', '1', '-cov', 'ReadGroupCovariate', 
-              '-knownSites', confData['dbsnp']]
+    bqscmd = [confTools['java'], '-jar', confTools['gatk'], 
+              '-T', 'BaseRecalibrator', '-R', confData['reference'], 
+              '-I', ral_path, '-o', bqs_path, '-nct', '1', 
+              '-cov', 'ReadGroupCovariate', '-knownSites', confData['dbsnp']]
 
+    print("INFO: Base quality score recalibration - Started")
     bqsrun = subprocess.Popen(bqscmd, shell=False)
     bqsrun.wait()
 
     if bqsrun.returncode != 0:
-        print('Base quality score recalibrator failed; Exiting program')
+        print('ERROR: Base quality score recalibrator failed; Exiting program\n')
         sys.exit(1)
     
+    print("INFO: Base quality score recalibration - Done!\n")
     # ==========================================================================
     # Print Reads (generate final BAM)
     fbam_path = '{0}/{1}_final.bam'.format(confData['outputdir'], 
@@ -297,13 +343,15 @@ def main(config_path):
                  '-R', confData['reference'], '-I', ral_path, 
                  '-o', fbam_path, '-BQSR', bqs_path, '-nct', '1']
 
+    print("INFO: Final BAM generation strated")
     prrun = subprocess.Popen(prcmd, shell=False)
     prrun.wait()
 
     if prrun.returncode != 0:
-        print('Print reads failed; Exiting program')
+        print('ERROR: Print reads failed; Exiting program\n')
         sys.exit(1)
     
+    print("INFO: Final BAM generation - Done!\n")
     # ==========================================================================
     # Coverage stats calculation from the final BAM file
     covfile_path = '{0}/{1}_{2}_coverage.tsv'.format(
@@ -311,40 +359,47 @@ def main(config_path):
         os.path.splitext(os.path.basename(confData['geneset']))[0], 
         os.path.splitext(os.path.basename(fbam_path))[0])
     
+    print("INFO: Coverage stats calculation - Started")
     calculateCoverageStats(fbam_path, confData['geneset'], covfile_path, 
                            confTools['samtools'])
+    print("INFO: Coverage stats calculation - Done!\n")
     
     # ==========================================================================
     # Haplotype caller
     vcf_path = '{0}/variants.vcf'.format(confData['outputdir'], 
         os.path.splitext(os.path.basename(sam_path))[0])
-    hcmd     = [confTools['java'], '-jar', confTools['gatk'], '-T', 'HaplotypeCaller', 
-                '-R', confData['reference'], '-I', fbam_path, '--dbsnp',
-                 confData['dbsnp'], '-o', vcf_path, '-nct', '1', 
-                '-gt_mode', 'DISCOVERY']
+    hcmd     = [confTools['java'], '-jar', confTools['gatk'], 
+                '-T', 'HaplotypeCaller', '-R', confData['reference'], 
+                '-I', fbam_path, '--dbsnp', confData['dbsnp'], 
+                '-o', vcf_path, '-nct', '1', '-gt_mode', 'DISCOVERY']
             
+    print("INFO: Variants calling (Haplotype caller) - Started")
     hrun = subprocess.Popen(hcmd, shell=False)
     hrun.wait()
     
     if hrun.returncode != 0:
-        print('Haplotype caller failed; Exiting program')
+        print('ERROR: Haplotype caller failed; Exiting program\n')
         sys.exit(1)
     
+    print("INFO: Variants calling (Haplotype caller) - Done!\n")
     # ==========================================================================
     # Variants filtering step
     vcf_filtered_path = '{0}/variants.filtered.vcf'.format(
         confData['outputdir'], os.path.splitext(os.path.basename(sam_path))[0])
-    fcmd = [confTools['java'], '-jar', confTools['gatk'], '-T', 'SelectVariants', 
-            '-R', confData['reference'], '-V', vcf_path, 
-            '-select', 'DP>=25 && QUAL>=30', '-o', vcf_filtered_path]
+    fcmd = [confTools['java'], '-jar', confTools['gatk'], 
+            '-T', 'SelectVariants', '-R', confData['reference'], 
+            '-V', vcf_path, '-select', 'DP>=25 && QUAL>=30', 
+            '-o', vcf_filtered_path]
             
+    print("INFO: Variants filtering - Started")
     frun = subprocess.Popen(fcmd, shell=False)
     frun.wait()
     
     if frun.returncode != 0:
-        print('Variants filtering failed; Exiting program')
+        print('ERROR: Variants filtering failed; Exiting program\n')
         sys.exit(1)
         
+    print("INFO: Variants filtering - Done!\n")
     # ==========================================================================
     # CNVs calling
     freecConfPath = os.path.abspath('{0}/freec_conf.txt'.format(confData['outputdir']))
@@ -359,13 +414,15 @@ def main(config_path):
         
     freecCmd = [confTools['freec'], '-conf', freecConfPath]
     
+    print("INFO: CNVs calling - Started")
     freecRun = subprocess.Popen(freecCmd, shell=False)
     freecRun.wait()
     
     if freecRun.returncode != 0:
-        print('CNVs calling failed; Exiting program')
+        print('ERROR: CNVs calling failed; Exiting program\n')
         sys.exit(1)
         
+    print("INFO: CNVs calling - Done!\n")
     # ====================================================================
     # CNVs plots
     # cat /data2/AHCG2017FALL/bin/FREEC/scripts/makeGraph.R | 
@@ -376,6 +433,7 @@ def main(config_path):
     plotCmd = ['R', '--slave', '--args', freecConf['general']['ploidy'], 
                ratioFilePath]
     
+    print("INFO: CNVs plots generation - Started")
     catRun  = subprocess.Popen(catCmd, stdout=subprocess.PIPE, shell=False)
     plotRun = subprocess.Popen(plotCmd, stdin=catRun.stdout, shell=False)
     catRun.stdout.close()
@@ -383,12 +441,14 @@ def main(config_path):
     catRun.wait()
     
     if plotRun.returncode != 0:
-        print('CNVs plotting failed; Exiting program')
+        print('ERROR: CNVs plotting failed; Exiting program\n')
         sys.exit(1)
+    
+    print("INFO: CNVs plots generation - Done!\n")
     # ====================================================================
 
-    print('Variant call pipeline completed')
-    print('VCF file can be found at {0}'.format(vcf_path))
+    print('INFO: Variant call pipeline completed')
+    print('INFO: VCF file can be found at {0}'.format(vcf_path))
     return 0;
 
 if __name__ == '__main__':
@@ -398,7 +458,8 @@ if __name__ == '__main__':
         epilog = textwrap.dedent('''
 config file format and options:
   [data]
-  inputfiles  = <List of paired end read files (comma sparated)>
+  inputfiles  = <List of paired end read files (comma sparated) of the sample to process>
+  sraid       = <SRA accession number of the sample to download and process>
   geneset     = <Path to the bed file with genes of interest to calculate coverage statistics>
   outputdir   = <Path to the output directory>
   
@@ -423,14 +484,14 @@ config file format and options:
 config file details:
   - Sections [tools] and [data] are required
   - All the options are required except for those that correspond to executable
-    files 
-  - Options for executable files (bowtie2, freec, java, and samtools) can be omitted 
+    files (bowtie2, freec, java, and samtools) which can be omitted 
     if they are available in the system through the $PATH variable.
+  - inputfiles and sraid options ([data] section) are mutually exclusive. 
+    If the two options are specified, inputfiles will have priority
 '''))
     parser.add_argument('-c', '--config', dest = 'config_path', type = str, 
         help = 'Path to config file')
         
-    
     # Enrichment kit (Nextera Enrichment Capture kit)
     # Download samples given an SRA accession
     
