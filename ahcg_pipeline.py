@@ -117,11 +117,13 @@ def main(config_path):
     confTools   = config['tools']
     confData    = config['data']
     toolsToCheck = {
+        'assesssig'  : 'Control-FREEC\'s assess_significance.R script',
         'bowtie2'    : 'Bowtie2',
         'fastq-dump' : 'fastq-dump (SRA Toolkit)',
         'freec'      : 'Control-FREEC',
         'gatk'       : 'GATK',
         'java'       : 'Java',
+        'makegraph'  : 'Control-FREEC\'s makeGraph.R script',
         'picard'     : 'Picard',
         'samtools'   : 'Samtools',
         'trimmomatic': 'Trimmomatic'
@@ -446,7 +448,28 @@ def main(config_path):
     
     print("INFO: CNVs plots generation - Done!\n")
     # ====================================================================
-
+    # Significance assessing
+    # cat /data2/AHCG2017FALL/bin/FREEC/scripts/assess_significance.R | 
+    # R --slave --args <*_CNVs> <*_ratio.txt>
+    cnvsFilePath  = os.path.abspath('{0}/{1}_CNVs'.format(freecConf['general']['outputDir'],
+        os.path.basename(fbam_path)))
+    catCmd = ['cat', confTools['assesssig']]
+    sigCmd = ['R', '--slave', '--args', cnvsFilePath, ratioFilePath]
+    
+    print("INFO: CNVs significance assessing - Started")
+    catRun = subprocess.Popen(catCmd, stdout=subprocess.PIPE, shell=False)
+    sigRun = subprocess.Popen(sigCmd, stdin=catRun.stdout, shell=False)
+    catRun.stdout.close()
+    sigRun.wait()
+    catRun.wait()
+    
+    if sigRun.returncode != 0:
+        print('ERROR: CNVs significance assessing failed; Exiting program\n')
+        sys.exit(1)
+    
+    print("INFO: CNVs significance assessing - Done!\n")
+    # ====================================================================
+    
     print('INFO: Variant call pipeline completed')
     print('INFO: VCF file can be found at {0}'.format(vcf_path))
     return 0;
@@ -471,11 +494,14 @@ config file format and options:
   reference   = <Path to the reference genome fasta file>
   
   [tools]
+  assesssig   = <Path to Control-FREEC assess_significance.R> 
+                (Usually in the folder scripts at the Control-FREEC root dir)
   bowtie2     = <Path to Bowtie2 executable>
   freec       = <Path to Control-FREEC executable>
   gatk        = <Path to GATK jar file>
   java        = <Path to Java executable>
-  makegraph   = <Path to Control-FREEC makeGraph.R script (Usually in the folder scripts at the Control-FREEC root dir)>
+  makegraph   = <Path to Control-FREEC makeGraph.R script>
+                (Usually in the folder scripts at the Control-FREEC root dir)
   picard      = <Path to Picard jar file>
   samtools    = <Path to Samtools executable>
   trimmomatic = <Path to Trimmomatic jar file>
@@ -493,7 +519,7 @@ config file details:
         help = 'Path to config file')
     
     parser.add_argument('-v', '--version', action = 'version', 
-        version = '''%(prog)s 1.0.6
+        version = '''%(prog)s 1.0.7
 Copyright (c) 2017 Georgia Institute of Technology
 Applied Human Computational Genomics - Fall 2017''')
     
