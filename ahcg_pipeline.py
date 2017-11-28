@@ -157,7 +157,7 @@ def main(config_path):
 
     # Create the output directory
     if not os.path.exists(confData['outputdir']):
-        os.mkdir(confData['outputdir'])
+        os.makedirs(confData['outputdir'])
 
     # Check for input files (inputfiles or sraid options)
     if 'inputfiles' in confData:
