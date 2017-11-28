@@ -1,8 +1,8 @@
 [data]
-# inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
-sraid           = SRR2530742
+inputfiles      = /data2/AHCG2017FALL/data5/SRR1654222_1.fastq,/data2/AHCG2017FALL/data5/SRR1654222_2.fastq
+# sraid           = SRR1654222
 geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
-outputdir       = /data2/AHCG2017FALL/output5
+outputdir       = /data2/AHCG2017FALL/final_set/SRR1654222_germline
 
 adapters        = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa
 chrlenfile      = /data2/AHCG2017FALL/reference_genome/chromosomeSizes.txt
