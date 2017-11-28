@@ -67,14 +67,25 @@ python3 ahcg_pipeline.py -h
 | `samtools`    | Path to Samtools executable                                                                                |
 | `trimmomatic` | Path to Trimmomatic jar file                                                                               |
 
+### `[freec-control]` section
+
+Optional section for Control-FREEC's config file `control` section parameters
+
+| Option          | Description                                                                                                                                                           |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| mateFile        | Path to file to act as control of the current sample. See control-FREEC manual for details>                                                                           |
+| inputFormat     | Format of mateFile (SAM, BAM, pileup and others. See control-FREEC manual for details)>                                                                               |
+| mateOrientation | Orientation of reads in mateFile. 0 - single ends), RF - Illumina mate-pairs, FR - Illumina paired-ends), FF - SOLiD mate-pairs. See control-FREEC manual for details |
 
 ### Example of config file
 
 ```
 [data]
-inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
+# inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
+sraid           = SRR2530742
 geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
 outputdir       = /data2/AHCG2017FALL/output5
+
 adapters        = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa
 chrlenfile      = /data2/AHCG2017FALL/reference_genome/chromosomeSizes.txt
 chrfiles        = /data2/AHCG2017FALL/reference_genome/chroms/
@@ -83,7 +94,9 @@ index           = /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome
 reference       = /data2/AHCG2017FALL/reference_genome/genome.fa
 
 [tools]
+assesssig       = /data2/AHCG2017FALL/bin/FREEC/scripts/assess_significance.R
 bowtie2         = /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2
+fastq-dump      = /data2/AHCG2017FALL/bin/sratoolkit/bin/fastq-dump
 freec           = /data2/AHCG2017FALL/bin/FREEC/src/freec
 gatk            = /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar
 java            = /data2/AHCG2017FALL/bin/java-1.8/bin/java
@@ -91,6 +104,11 @@ makegraph       = /data2/AHCG2017FALL/bin/FREEC/scripts/makeGraph.R
 picard          = /data2/AHCG2017FALL/bin/picard/picard.jar
 samtools        = /data2/AHCG2017FALL/bin/samtools-1.5/samtools
 trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
+
+[freec-control]
+mateFile        = /data2/AHCG2017FALL/output4/SRR2530741_1_trimmed_final.bam
+inputFormat     = BAM
+mateOrientation = FR
 ```
 
 ##  Execution example
@@ -98,17 +116,22 @@ trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
 ### Building directory structure
 
 ```{sh}
-mkdir -p data/reads data/reference data/adapters output 
+mkdir -p data/reads data/reference data/adapters output
 ```
 ### Downloading data
-    
+
 #### Read sample
 
-We will download the sample SRR948996 from the SRA databse using the SRA-Toolkit:
-    
+We can download the sample SRR948996 from the SRA databse using the SRA-Toolkit
+to specify their path using `inputfiles` option in the config file:
+
 ```{sh}
 fastq-dump --split-files SRR948994
 ```
+
+Alternatively, you can specify the id of the sample (SRR948994) using the
+`sraid` option in the config file to delegate the download of the sample files
+to the pipeline.
 
 #### Reference genome
 
@@ -120,6 +143,3 @@ wget ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Homo_sapiens/NCBI/GRCh38/Homo
 ```{sh}
 ./ahcg_pipeline_v1.0.1.py -c config_file.txt
 ```
-
-
-

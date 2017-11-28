@@ -1,1022 +1,432 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>body {
-  max-width: 980px;
-  border: 1px solid #ddd;
-  outline: 1300px solid #fff;
-  margin: 16px auto;
-}
-
-body .markdown-body
-{
-  padding: 45px;
-}
-
-@font-face {
-  font-family: fontawesome-mini;
-  src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
-}
-
-@font-face {
-  font-family: octicons-anchor;
-  src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
-}
-
-.markdown-body {
-  font-family: sans-serif;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  color: #333333;
-  overflow: hidden;
-  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  word-wrap: break-word;
-}
-
-.markdown-body a {
-  background: transparent;
-}
-
-.markdown-body a:active,
-.markdown-body a:hover {
-  outline: 0;
-}
-
-.markdown-body b,
-.markdown-body strong {
-  font-weight: bold;
-}
-
-.markdown-body mark {
-  background: #ff0;
-  color: #000;
-  font-style: italic;
-  font-weight: bold;
-}
-
-.markdown-body sub,
-.markdown-body sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
-.markdown-body sup {
-  top: -0.5em;
-}
-.markdown-body sub {
-  bottom: -0.25em;
-}
-
-.markdown-body h1 {
-  font-size: 2em;
-  margin: 0.67em 0;
-}
-
-.markdown-body img {
-  border: 0;
-}
-
-.markdown-body hr {
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-  height: 0;
-}
-
-.markdown-body pre {
-  overflow: auto;
-}
-
-.markdown-body code,
-.markdown-body kbd,
-.markdown-body pre,
-.markdown-body samp {
-  font-family: monospace, monospace;
-  font-size: 1em;
-}
-
-.markdown-body input {
-  color: inherit;
-  font: inherit;
-  margin: 0;
-}
-
-.markdown-body html input[disabled] {
-  cursor: default;
-}
-
-.markdown-body input {
-  line-height: normal;
-}
-
-.markdown-body input[type="checkbox"] {
-  box-sizing: border-box;
-  padding: 0;
-}
-
-.markdown-body table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-.markdown-body td,
-.markdown-body th {
-  padding: 0;
-}
-
-.markdown-body .codehilitetable {
-  border: 0;
-  border-spacing: 0;
-}
-
-.markdown-body .codehilitetable tr {
-  border: 0;
-}
-
-.markdown-body .codehilitetable pre,
-.markdown-body .codehilitetable div.codehilite {
-  margin: 0;
-}
-
-.markdown-body .linenos,
-.markdown-body .code,
-.markdown-body .codehilitetable td {
-  border: 0;
-  padding: 0;
-}
-
-.markdown-body td:not(.linenos) .linenodiv {
-  padding: 0 !important;
-}
-
-.markdown-body .code {
-  width: 100%;
-}
-
-.markdown-body .linenos div pre,
-.markdown-body .linenodiv pre,
-.markdown-body .linenodiv {
-  border: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-  -webkit-border-top-left-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -moz-border-radius-topleft: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-}
-
-.markdown-body .code div pre,
-.markdown-body .code div {
-  border: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  -moz-border-radius-bottomright: 3px;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-}
-
-.markdown-body * {
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-.markdown-body input {
-  font: 13px Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-  line-height: 1.4;
-}
-
-.markdown-body a {
-  color: #4183c4;
-  text-decoration: none;
-}
-
-.markdown-body a:hover,
-.markdown-body a:focus,
-.markdown-body a:active {
-  text-decoration: underline;
-}
-
-.markdown-body hr {
-  height: 0;
-  margin: 15px 0;
-  overflow: hidden;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.markdown-body hr:before,
-.markdown-body hr:after {
-  display: table;
-  content: " ";
-}
-
-.markdown-body hr:after {
-  clear: both;
-}
-
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3,
-.markdown-body h4,
-.markdown-body h5,
-.markdown-body h6 {
-  margin-top: 15px;
-  margin-bottom: 15px;
-  line-height: 1.1;
-}
-
-.markdown-body h1 {
-  font-size: 30px;
-}
-
-.markdown-body h2 {
-  font-size: 21px;
-}
-
-.markdown-body h3 {
-  font-size: 16px;
-}
-
-.markdown-body h4 {
-  font-size: 14px;
-}
-
-.markdown-body h5 {
-  font-size: 12px;
-}
-
-.markdown-body h6 {
-  font-size: 11px;
-}
-
-.markdown-body blockquote {
-  margin: 0;
-}
-
-.markdown-body ul,
-.markdown-body ol {
-  padding: 0;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.markdown-body ol ol,
-.markdown-body ul ol {
-  list-style-type: lower-roman;
-}
-
-.markdown-body ul ul ol,
-.markdown-body ul ol ol,
-.markdown-body ol ul ol,
-.markdown-body ol ol ol {
-  list-style-type: lower-alpha;
-}
-
-.markdown-body dd {
-  margin-left: 0;
-}
-
-.markdown-body code,
-.markdown-body pre,
-.markdown-body samp {
-  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  font-size: 12px;
-}
-
-.markdown-body pre {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.markdown-body kbd {
-  background-color: #e7e7e7;
-  background-image: -moz-linear-gradient(#fefefe, #e7e7e7);
-  background-image: -webkit-linear-gradient(#fefefe, #e7e7e7);
-  background-image: linear-gradient(#fefefe, #e7e7e7);
-  background-repeat: repeat-x;
-  border-radius: 2px;
-  border: 1px solid #cfcfcf;
-  color: #000;
-  padding: 3px 5px;
-  line-height: 10px;
-  font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  display: inline-block;
-}
-
-.markdown-body>*:first-child {
-  margin-top: 0 !important;
-}
-
-.markdown-body>*:last-child {
-  margin-bottom: 0 !important;
-}
-
-.markdown-body .headeranchor-link {
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>README</title>
+      <style>.markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(255, 255, 255); background-color: rgb(0, 34, 64); overflow: auto; }
+.markdown-preview:not([data-use-github-style]) > :first-child { margin-top: 0px; }
+.markdown-preview:not([data-use-github-style]) h1, .markdown-preview:not([data-use-github-style]) h2, .markdown-preview:not([data-use-github-style]) h3, .markdown-preview:not([data-use-github-style]) h4, .markdown-preview:not([data-use-github-style]) h5, .markdown-preview:not([data-use-github-style]) h6 { line-height: 1.2; margin-top: 1.5em; margin-bottom: 0.5em; color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) h1 { font-size: 2.4em; font-weight: 300; }
+.markdown-preview:not([data-use-github-style]) h2 { font-size: 1.8em; font-weight: 400; }
+.markdown-preview:not([data-use-github-style]) h3 { font-size: 1.5em; font-weight: 500; }
+.markdown-preview:not([data-use-github-style]) h4 { font-size: 1.2em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h5 { font-size: 1.1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h6 { font-size: 1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) strong { color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) del { color: rgb(214, 214, 214); }
+.markdown-preview:not([data-use-github-style]) a, .markdown-preview:not([data-use-github-style]) a code { color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) img { max-width: 100%; }
+.markdown-preview:not([data-use-github-style]) > p { margin-top: 0px; margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) > ul, .markdown-preview:not([data-use-github-style]) > ol { margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) blockquote { margin: 1.5em 0px; font-size: inherit; color: rgb(214, 214, 214); border-color: rgb(0, 77, 146); border-width: 4px; }
+.markdown-preview:not([data-use-github-style]) hr { margin: 3em 0px; border-top: 2px dashed rgb(0, 77, 146); background: none; }
+.markdown-preview:not([data-use-github-style]) table { margin: 1.5em 0px; }
+.markdown-preview:not([data-use-github-style]) th { color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) th, .markdown-preview:not([data-use-github-style]) td { padding: 0.66em 1em; border: 1px solid rgb(0, 77, 146); }
+.markdown-preview:not([data-use-github-style]) code { color: rgb(255, 255, 255); background-color: rgb(0, 56, 105); }
+.markdown-preview:not([data-use-github-style]) pre.editor-colors { margin: 1.5em 0px; padding: 1em; font-size: 0.92em; border-radius: 3px; background-color: rgb(0, 45, 84); }
+.markdown-preview:not([data-use-github-style]) kbd { color: rgb(255, 255, 255); border-width: 1px 1px 2px; border-style: solid; border-color: rgb(0, 77, 146) rgb(0, 77, 146) rgb(0, 61, 115); border-image: initial; background-color: rgb(0, 56, 105); }
+.markdown-preview[data-use-github-style] { font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif; line-height: 1.6; word-wrap: break-word; padding: 30px; font-size: 16px; color: rgb(51, 51, 51); background-color: rgb(255, 255, 255); overflow: scroll; }
+.markdown-preview[data-use-github-style] > :first-child { margin-top: 0px !important; }
+.markdown-preview[data-use-github-style] > :last-child { margin-bottom: 0px !important; }
+.markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }
+.markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }
+.markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }
+.markdown-preview[data-use-github-style] .anchor:focus { outline: none; }
+.markdown-preview[data-use-github-style] h1, .markdown-preview[data-use-github-style] h2, .markdown-preview[data-use-github-style] h3, .markdown-preview[data-use-github-style] h4, .markdown-preview[data-use-github-style] h5, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+.markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }
+.markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }
+.markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }
+.markdown-preview[data-use-github-style] h1 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview[data-use-github-style] h1 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }
+.markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom: 1px solid rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom: 1px solid rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }
+.markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }
+.markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h5 { font-size: 1em; }
+.markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }
+.markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] p, .markdown-preview[data-use-github-style] blockquote, .markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol, .markdown-preview[data-use-github-style] dl, .markdown-preview[data-use-github-style] table, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; background-color: rgb(231, 231, 231); border: 0px none; }
+.markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }
+.markdown-preview[data-use-github-style] ul.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }
+.markdown-preview[data-use-github-style] ul ul, .markdown-preview[data-use-github-style] ul ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] li > p { margin-top: 16px; }
+.markdown-preview[data-use-github-style] dl { padding: 0px; }
+.markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }
+.markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left: 4px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] blockquote > :first-child { margin-top: 0px; }
+.markdown-preview[data-use-github-style] blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: keep-all; }
+.markdown-preview[data-use-github-style] table th { font-weight: bold; }
+.markdown-preview[data-use-github-style] table th, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] table tr { background-color: rgb(255, 255, 255); border-top: 1px solid rgb(204, 204, 204); }
+.markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }
+.markdown-preview[data-use-github-style] .emoji { max-width: none; }
+.markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.frame > span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }
+.markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }
+.markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-center > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-right > span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-right > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] code, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; background-color: rgba(0, 0, 0, 0.0392157); border-radius: 3px; }
+.markdown-preview[data-use-github-style] code::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview[data-use-github-style] code::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: " "; }
+.markdown-preview[data-use-github-style] code br, .markdown-preview[data-use-github-style] tt br { display: none; }
+.markdown-preview[data-use-github-style] del code { text-decoration: inherit; }
+.markdown-preview[data-use-github-style] pre > code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; background: transparent; border: 0px; }
+.markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] .highlight pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, 247); border-radius: 3px; }
+.markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }
+.markdown-preview[data-use-github-style] pre { word-wrap: normal; }
+.markdown-preview[data-use-github-style] pre code, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; background-color: transparent; border: 0px; }
+.markdown-preview[data-use-github-style] pre code::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }
+.markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; background-color: rgb(252, 252, 252); border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-image: initial; border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; }
+.markdown-preview[data-use-github-style] a { color: rgb(51, 122, 183); }
+.markdown-preview[data-use-github-style] code { color: inherit; }
+.markdown-preview[data-use-github-style] pre.editor-colors { padding: 0.8em 1em; margin-bottom: 1em; font-size: 0.85em; border-radius: 4px; overflow: auto; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors .horizontal-scrollbar { visibility: hidden; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors:hover .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors:hover .horizontal-scrollbar { visibility: visible; }
+.markdown-preview .task-list-item-checkbox { position: absolute; margin: 0.25em 0px 0px -1.4em; }
+.markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(255, 255, 255); background-color: rgb(0, 34, 64); overflow: auto; }
+.markdown-preview:not([data-use-github-style]) > :first-child { margin-top: 0px; }
+.markdown-preview:not([data-use-github-style]) h1, .markdown-preview:not([data-use-github-style]) h2, .markdown-preview:not([data-use-github-style]) h3, .markdown-preview:not([data-use-github-style]) h4, .markdown-preview:not([data-use-github-style]) h5, .markdown-preview:not([data-use-github-style]) h6 { line-height: 1.2; margin-top: 1.5em; margin-bottom: 0.5em; color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) h1 { font-size: 2.4em; font-weight: 300; }
+.markdown-preview:not([data-use-github-style]) h2 { font-size: 1.8em; font-weight: 400; }
+.markdown-preview:not([data-use-github-style]) h3 { font-size: 1.5em; font-weight: 500; }
+.markdown-preview:not([data-use-github-style]) h4 { font-size: 1.2em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h5 { font-size: 1.1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h6 { font-size: 1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) strong { color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) del { color: rgb(214, 214, 214); }
+.markdown-preview:not([data-use-github-style]) a, .markdown-preview:not([data-use-github-style]) a code { color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) img { max-width: 100%; }
+.markdown-preview:not([data-use-github-style]) > p { margin-top: 0px; margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) > ul, .markdown-preview:not([data-use-github-style]) > ol { margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) blockquote { margin: 1.5em 0px; font-size: inherit; color: rgb(214, 214, 214); border-color: rgb(0, 77, 146); border-width: 4px; }
+.markdown-preview:not([data-use-github-style]) hr { margin: 3em 0px; border-top: 2px dashed rgb(0, 77, 146); background: none; }
+.markdown-preview:not([data-use-github-style]) table { margin: 1.5em 0px; }
+.markdown-preview:not([data-use-github-style]) th { color: rgb(255, 255, 255); }
+.markdown-preview:not([data-use-github-style]) th, .markdown-preview:not([data-use-github-style]) td { padding: 0.66em 1em; border: 1px solid rgb(0, 77, 146); }
+.markdown-preview:not([data-use-github-style]) pre, .markdown-preview:not([data-use-github-style]) code { color: rgb(255, 255, 255); background-color: rgb(0, 56, 105); }
+.markdown-preview:not([data-use-github-style]) pre, .markdown-preview:not([data-use-github-style]) pre.editor-colors { margin: 1.5em 0px; padding: 1em; font-size: 0.92em; border-radius: 3px; background-color: rgb(0, 45, 84); }
+.markdown-preview:not([data-use-github-style]) kbd { color: rgb(255, 255, 255); border-width: 1px 1px 2px; border-style: solid; border-color: rgb(0, 77, 146) rgb(0, 77, 146) rgb(0, 61, 115); border-image: initial; background-color: rgb(0, 56, 105); }
+.markdown-preview[data-use-github-style] { font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif; line-height: 1.6; word-wrap: break-word; padding: 30px; font-size: 16px; color: rgb(51, 51, 51); background-color: rgb(255, 255, 255); overflow: scroll; }
+.markdown-preview[data-use-github-style] > :first-child { margin-top: 0px !important; }
+.markdown-preview[data-use-github-style] > :last-child { margin-bottom: 0px !important; }
+.markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }
+.markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }
+.markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }
+.markdown-preview[data-use-github-style] .anchor:focus { outline: none; }
+.markdown-preview[data-use-github-style] h1, .markdown-preview[data-use-github-style] h2, .markdown-preview[data-use-github-style] h3, .markdown-preview[data-use-github-style] h4, .markdown-preview[data-use-github-style] h5, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+.markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }
+.markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }
+.markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }
+.markdown-preview[data-use-github-style] h1 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview[data-use-github-style] h1 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }
+.markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom: 1px solid rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom: 1px solid rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }
+.markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }
+.markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h5 { font-size: 1em; }
+.markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }
+.markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] p, .markdown-preview[data-use-github-style] blockquote, .markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol, .markdown-preview[data-use-github-style] dl, .markdown-preview[data-use-github-style] table, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; background-color: rgb(231, 231, 231); border: 0px none; }
+.markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }
+.markdown-preview[data-use-github-style] ul.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }
+.markdown-preview[data-use-github-style] ul ul, .markdown-preview[data-use-github-style] ul ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] li > p { margin-top: 16px; }
+.markdown-preview[data-use-github-style] dl { padding: 0px; }
+.markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }
+.markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left: 4px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] blockquote > :first-child { margin-top: 0px; }
+.markdown-preview[data-use-github-style] blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: keep-all; }
+.markdown-preview[data-use-github-style] table th { font-weight: bold; }
+.markdown-preview[data-use-github-style] table th, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] table tr { background-color: rgb(255, 255, 255); border-top: 1px solid rgb(204, 204, 204); }
+.markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }
+.markdown-preview[data-use-github-style] .emoji { max-width: none; }
+.markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.frame > span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }
+.markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }
+.markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-center > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-right > span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-right > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] code, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; background-color: rgba(0, 0, 0, 0.0392157); border-radius: 3px; }
+.markdown-preview[data-use-github-style] code::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview[data-use-github-style] code::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: " "; }
+.markdown-preview[data-use-github-style] code br, .markdown-preview[data-use-github-style] tt br { display: none; }
+.markdown-preview[data-use-github-style] del code { text-decoration: inherit; }
+.markdown-preview[data-use-github-style] pre > code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; background: transparent; border: 0px; }
+.markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] .highlight pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, 247); border-radius: 3px; }
+.markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }
+.markdown-preview[data-use-github-style] pre { word-wrap: normal; }
+.markdown-preview[data-use-github-style] pre code, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; background-color: transparent; border: 0px; }
+.markdown-preview[data-use-github-style] pre code::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }
+.markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; background-color: rgb(252, 252, 252); border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-image: initial; border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; }
+.markdown-preview[data-use-github-style] a { color: rgb(51, 122, 183); }
+.markdown-preview[data-use-github-style] pre, .markdown-preview[data-use-github-style] code { color: inherit; }
+.markdown-preview[data-use-github-style] pre, .markdown-preview[data-use-github-style] pre.editor-colors { padding: 0.8em 1em; margin-bottom: 1em; font-size: 0.85em; border-radius: 4px; overflow: auto; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors .horizontal-scrollbar { visibility: hidden; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors:hover .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors:hover .horizontal-scrollbar { visibility: visible; }
+.markdown-preview del { text-decoration: none; position: relative; }
+.markdown-preview del::after { border-bottom: 1px solid black; content: ""; left: 0px; position: absolute; right: 0px; top: 50%; }
+.markdown-preview .flash { animation: flash 1s ease-out 1; outline: rgba(255, 0, 0, 0) solid 1px; }
+.markdown-preview .flash:not(li) { display: block; }
+.markdown-preview code { text-shadow: none; }
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  display: block;
-  padding-right: 6px;
-  padding-left: 30px;
-  margin-left: -30px;
+}
+.line-number.bracket-matcher {
+  background-color: #777;
 }
 
-.markdown-body .headeranchor-link:focus {
-  outline: none;
+.ftpconfig_line_error {
+  background: rgba(255, 0, 0, 0.5) !important;
+}
+.btn.btn-float-left {
+  float: left !important;
+}
+.btn.btn-float-right {
+  float: right !important;
 }
 
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3,
-.markdown-body h4,
-.markdown-body h5,
-.markdown-body h6 {
-  position: relative;
-  margin-top: 1em;
-  margin-bottom: 16px;
-  font-weight: bold;
-  line-height: 1.4;
+.spell-check-misspelling .region {
+  border-bottom: 2px dotted rgba(255, 51, 51, 0.75);
+}
+.spell-check-corrections {
+  width: 25em !important;
 }
 
-.markdown-body h1 .headeranchor,
-.markdown-body h2 .headeranchor,
-.markdown-body h3 .headeranchor,
-.markdown-body h4 .headeranchor,
-.markdown-body h5 .headeranchor,
-.markdown-body h6 .headeranchor {
-  display: none;
-  color: #000;
-  vertical-align: middle;
+pre.editor-colors,pre.editor-colors {
+  background-color: #002240;
+  color: #FFFFFF;
 }
-
-.markdown-body h1:hover .headeranchor-link,
-.markdown-body h2:hover .headeranchor-link,
-.markdown-body h3:hover .headeranchor-link,
-.markdown-body h4:hover .headeranchor-link,
-.markdown-body h5:hover .headeranchor-link,
-.markdown-body h6:hover .headeranchor-link {
-  height: 1em;
-  padding-left: 8px;
-  margin-left: -30px;
-  line-height: 1;
-  text-decoration: none;
+pre.editor-colors .gutter,pre.editor-colors .gutter {
+  background-color: #002240;
+  color: #FFFFFF;
 }
-
-.markdown-body h1:hover .headeranchor-link .headeranchor,
-.markdown-body h2:hover .headeranchor-link .headeranchor,
-.markdown-body h3:hover .headeranchor-link .headeranchor,
-.markdown-body h4:hover .headeranchor-link .headeranchor,
-.markdown-body h5:hover .headeranchor-link .headeranchor,
-.markdown-body h6:hover .headeranchor-link .headeranchor {
-  display: inline-block;
+pre.editor-colors .gutter .line-number.cursor-line,pre.editor-colors .gutter .line-number.cursor-line {
+  background-color: rgba(0, 0, 0, 0.35);
+  color: #FFFFFF;
 }
-
-.markdown-body h1 {
-  padding-bottom: 0.3em;
-  font-size: 2.25em;
-  line-height: 1.2;
-  border-bottom: 1px solid #eee;
+pre.editor-colors .gutter .line-number.cursor-line-no-selection,pre.editor-colors .gutter .line-number.cursor-line-no-selection {
+  color: #FFFFFF;
 }
-
-.markdown-body h2 {
-  padding-bottom: 0.3em;
-  font-size: 1.75em;
-  line-height: 1.225;
-  border-bottom: 1px solid #eee;
+pre.editor-colors .wrap-guide,pre.editor-colors .wrap-guide {
+  color: rgba(255, 255, 255, 0.15);
 }
-
-.markdown-body h3 {
-  font-size: 1.5em;
-  line-height: 1.43;
+pre.editor-colors .indent-guide,pre.editor-colors .indent-guide {
+  color: rgba(255, 255, 255, 0.15);
 }
-
-.markdown-body h4 {
-  font-size: 1.25em;
+pre.editor-colors .invisible-character,pre.editor-colors .invisible-character {
+  color: rgba(255, 255, 255, 0.15);
 }
-
-.markdown-body h5 {
-  font-size: 1em;
-}
-
-.markdown-body h6 {
-  font-size: 1em;
-  color: #777;
-}
-
-.markdown-body p,
-.markdown-body blockquote,
-.markdown-body ul,
-.markdown-body ol,
-.markdown-body dl,
-.markdown-body table,
-.markdown-body pre,
-.markdown-body .admonition {
-  margin-top: 0;
-  margin-bottom: 16px;
-}
-
-.markdown-body hr {
-  height: 4px;
-  padding: 0;
-  margin: 16px 0;
-  background-color: #e7e7e7;
-  border: 0 none;
-}
-
-.markdown-body ul,
-.markdown-body ol {
-  padding-left: 2em;
-}
-
-.markdown-body ul ul,
-.markdown-body ul ol,
-.markdown-body ol ol,
-.markdown-body ol ul {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.markdown-body li>p {
-  margin-top: 16px;
-}
-
-.markdown-body dl {
-  padding: 0;
-}
-
-.markdown-body dl dt {
-  padding: 0;
-  margin-top: 16px;
-  font-size: 1em;
-  font-style: italic;
-  font-weight: bold;
-}
-
-.markdown-body dl dd {
-  padding: 0 16px;
-  margin-bottom: 16px;
-}
-
-.markdown-body blockquote {
-  padding: 0 15px;
-  color: #777;
-  border-left: 4px solid #ddd;
-}
-
-.markdown-body blockquote>:first-child {
-  margin-top: 0;
-}
-
-.markdown-body blockquote>:last-child {
-  margin-bottom: 0;
-}
-
-.markdown-body table {
-  display: block;
-  width: 100%;
-  overflow: auto;
-  word-break: normal;
-  word-break: keep-all;
-}
-
-.markdown-body table th {
-  font-weight: bold;
-}
-
-.markdown-body table th,
-.markdown-body table td {
-  padding: 6px 13px;
-  border: 1px solid #ddd;
-}
-
-.markdown-body table tr {
-  background-color: #fff;
-  border-top: 1px solid #ccc;
-}
-
-.markdown-body table tr:nth-child(2n) {
-  background-color: #f8f8f8;
-}
-
-.markdown-body img {
-  max-width: 100%;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-.markdown-body code,
-.markdown-body samp {
-  padding: 0;
-  padding-top: 0.2em;
-  padding-bottom: 0.2em;
-  margin: 0;
-  font-size: 85%;
-  background-color: rgba(0,0,0,0.04);
-  border-radius: 3px;
-}
-
-.markdown-body code:before,
-.markdown-body code:after {
-  letter-spacing: -0.2em;
-  content: "\00a0";
-}
-
-.markdown-body pre>code {
-  padding: 0;
-  margin: 0;
-  font-size: 100%;
-  word-break: normal;
-  white-space: pre;
-  background: transparent;
-  border: 0;
-}
-
-.markdown-body .codehilite {
-  margin-bottom: 16px;
-}
-
-.markdown-body .codehilite pre,
-.markdown-body pre {
-  padding: 16px;
-  overflow: auto;
-  font-size: 85%;
-  line-height: 1.45;
-  background-color: #f7f7f7;
-  border-radius: 3px;
-}
-
-.markdown-body .codehilite pre {
-  margin-bottom: 0;
-  word-break: normal;
-}
-
-.markdown-body pre {
-  word-wrap: normal;
-}
-
-.markdown-body pre code {
-  display: inline;
-  max-width: initial;
-  padding: 0;
-  margin: 0;
-  overflow: initial;
-  line-height: inherit;
-  word-wrap: normal;
+pre.editor-colors .search-results .syntax--marker .region,pre.editor-colors .search-results .syntax--marker .region {
   background-color: transparent;
-  border: 0;
+  border: rgba(255, 255, 255, 0.15);
 }
-
-.markdown-body pre code:before,
-.markdown-body pre code:after {
-  content: normal;
+pre.editor-colors .search-results .syntax--marker.current-result .region,pre.editor-colors .search-results .syntax--marker.current-result .region {
+  border: #FFFFFF;
 }
-
-/* Admonition */
-.markdown-body .admonition {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  position: relative;
-  border-radius: 3px;
-  border: 1px solid #e0e0e0;
-  border-left: 6px solid #333;
-  padding: 10px 10px 10px 30px;
+pre.editor-colors.is-focused .cursor,pre.editor-colors .cursor {
+  border-color: #FFFFFF;
 }
-
-.markdown-body .admonition table {
-  color: #333;
+pre.editor-colors.is-focused .selection .region,pre.editor-colors .selection .region {
+  background-color: rgba(179, 101, 57, 0.75);
 }
-
-.markdown-body .admonition p {
-  padding: 0;
+pre.editor-colors.is-focused .line-number.cursor-line-no-selection,
+pre.editor-colors.is-focused .line.cursor-line,pre.editor-colors .line-number.cursor-line-no-selection,pre.editor-colors .line.cursor-line {
+  background-color: rgba(0, 0, 0, 0.35);
 }
-
-.markdown-body .admonition-title {
-  font-weight: bold;
-  margin: 0;
+.syntax--punctuation:not(.punctuation.definition.string, .punctuation.definition.comment) {
+  color: #E1EFFF;
 }
-
-.markdown-body .admonition>.admonition-title {
-  color: #333;
+.syntax--constant {
+  color: #FF628C;
 }
-
-.markdown-body .attention>.admonition-title {
-  color: #a6d796;
+.syntax--entity {
+  color: #FFDD00;
 }
-
-.markdown-body .caution>.admonition-title {
-  color: #d7a796;
+.syntax--keyword {
+  color: #FF9D00;
 }
-
-.markdown-body .hint>.admonition-title {
-  color: #96c6d7;
+.syntax--storage {
+  color: #FFEE80;
 }
-
-.markdown-body .danger>.admonition-title {
-  color: #c25f77;
+.syntax--string:not(.string.unquoted.old-plist:not(.string.unquoted.heredoc)),
+.syntax--string.syntax--unquoted.syntax--heredoc .syntax--string {
+  color: #3AD900;
 }
-
-.markdown-body .question>.admonition-title {
-  color: #96a6d7;
-}
-
-.markdown-body .note>.admonition-title {
-  color: #d7c896;
-}
-
-.markdown-body .admonition:before,
-.markdown-body .attention:before,
-.markdown-body .caution:before,
-.markdown-body .hint:before,
-.markdown-body .danger:before,
-.markdown-body .question:before,
-.markdown-body .note:before {
-  font: normal normal 16px fontawesome-mini;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  line-height: 1.5;
-  color: #333;
-  position: absolute;
-  left: 0;
-  top: 0;
-  padding-top: 10px;
-  padding-left: 10px;
-}
-
-.markdown-body .admonition:before {
-  content: "\f056\00a0";
-  color: 333;
-}
-
-.markdown-body .attention:before {
-  content: "\f058\00a0";
-  color: #a6d796;
-}
-
-.markdown-body .caution:before {
-  content: "\f06a\00a0";
-  color: #d7a796;
-}
-
-.markdown-body .hint:before {
-  content: "\f05a\00a0";
-  color: #96c6d7;
-}
-
-.markdown-body .danger:before {
-  content: "\f057\00a0";
-  color: #c25f77;
-}
-
-.markdown-body .question:before {
-  content: "\f059\00a0";
-  color: #96a6d7;
-}
-
-.markdown-body .note:before {
-  content: "\f040\00a0";
-  color: #d7c896;
-}
-
-.markdown-body .admonition::after {
-  content: normal;
-}
-
-.markdown-body .attention {
-  border-left: 6px solid #a6d796;
-}
-
-.markdown-body .caution {
-  border-left: 6px solid #d7a796;
-}
-
-.markdown-body .hint {
-  border-left: 6px solid #96c6d7;
-}
-
-.markdown-body .danger {
-  border-left: 6px solid #c25f77;
-}
-
-.markdown-body .question {
-  border-left: 6px solid #96a6d7;
-}
-
-.markdown-body .note {
-  border-left: 6px solid #d7c896;
-}
-
-.markdown-body .admonition>*:first-child {
-  margin-top: 0 !important;
-}
-
-.markdown-body .admonition>*:last-child {
-  margin-bottom: 0 !important;
-}
-
-/* progress bar*/
-.markdown-body .progress {
-  display: block;
-  width: 300px;
-  margin: 10px 0;
-  height: 24px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  background-color: #ededed;
-  position: relative;
-  box-shadow: inset -1px 1px 3px rgba(0, 0, 0, .1);
-}
-
-.markdown-body .progress-label {
-  position: absolute;
-  text-align: center;
-  font-weight: bold;
-  width: 100%; margin: 0;
-  line-height: 24px;
-  color: #333;
-  text-shadow: 1px 1px 0 #fefefe, -1px -1px 0 #fefefe, -1px 1px 0 #fefefe, 1px -1px 0 #fefefe, 0 1px 0 #fefefe, 0 -1px 0 #fefefe, 1px 0 0 #fefefe, -1px 0 0 #fefefe, 1px 1px 2px #000;
-  -webkit-font-smoothing: antialiased !important;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.markdown-body .progress-bar {
-  height: 24px;
-  float: left;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  background-color: #96c6d7;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), inset 0 -1px 0 rgba(0, 0, 0, .1);
-  background-size: 30px 30px;
-  background-image: -webkit-linear-gradient(
-    135deg, rgba(255, 255, 255, .4) 27%,
-    transparent 27%,
-    transparent 52%, rgba(255, 255, 255, .4) 52%,
-    rgba(255, 255, 255, .4) 77%,
-    transparent 77%, transparent
-  );
-  background-image: -moz-linear-gradient(
-    135deg,
-    rgba(255, 255, 255, .4) 27%, transparent 27%,
-    transparent 52%, rgba(255, 255, 255, .4) 52%,
-    rgba(255, 255, 255, .4) 77%, transparent 77%,
-    transparent
-  );
-  background-image: -ms-linear-gradient(
-    135deg,
-    rgba(255, 255, 255, .4) 27%, transparent 27%,
-    transparent 52%, rgba(255, 255, 255, .4) 52%,
-    rgba(255, 255, 255, .4) 77%, transparent 77%,
-    transparent
-  );
-  background-image: -o-linear-gradient(
-    135deg,
-    rgba(255, 255, 255, .4) 27%, transparent 27%,
-    transparent 52%, rgba(255, 255, 255, .4) 52%,
-    rgba(255, 255, 255, .4) 77%, transparent 77%,
-    transparent
-  );
-  background-image: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, .4) 27%, transparent 27%,
-    transparent 52%, rgba(255, 255, 255, .4) 52%,
-    rgba(255, 255, 255, .4) 77%, transparent 77%,
-    transparent
-  );
-}
-
-.markdown-body .progress-100plus .progress-bar {
-  background-color: #a6d796;
-}
-
-.markdown-body .progress-80plus .progress-bar {
-  background-color: #c6d796;
-}
-
-.markdown-body .progress-60plus .progress-bar {
-  background-color: #d7c896;
-}
-
-.markdown-body .progress-40plus .progress-bar {
-  background-color: #d7a796;
-}
-
-.markdown-body .progress-20plus .progress-bar {
-  background-color: #d796a6;
-}
-
-.markdown-body .progress-0plus .progress-bar {
-  background-color: #c25f77;
-}
-
-.markdown-body .candystripe-animate .progress-bar{
-  -webkit-animation: animate-stripes 3s linear infinite;
-  -moz-animation: animate-stripes 3s linear infinite;
-  animation: animate-stripes 3s linear infinite;
-}
-
-@-webkit-keyframes animate-stripes {
-  0% {
-    background-position: 0 0;
-  }
-
-  100% {
-    background-position: 60px 0;
-  }
-}
-
-@-moz-keyframes animate-stripes {
-  0% {
-    background-position: 0 0;
-  }
-
-  100% {
-    background-position: 60px 0;
-  }
-}
-
-@keyframes animate-stripes {
-  0% {
-    background-position: 0 0;
-  }
-
-  100% {
-    background-position: 60px 0;
-  }
-}
-
-.markdown-body .gloss .progress-bar {
-  box-shadow:
-    inset 0 4px 12px rgba(255, 255, 255, .7),
-    inset 0 -12px 0 rgba(0, 0, 0, .05);
-}
-
-/* Multimarkdown Critic Blocks */
-.markdown-body .critic_mark {
-  background: #ff0;
-}
-
-.markdown-body .critic_delete {
-  color: #c82829;
-  text-decoration: line-through;
-}
-
-.markdown-body .critic_insert {
-  color: #718c00 ;
-  text-decoration: underline;
-}
-
-.markdown-body .critic_comment {
-  color: #8e908c;
+.syntax--comment {
   font-style: italic;
+  color: #0088FF;
 }
-
-.markdown-body .headeranchor {
-  font: normal normal 16px octicons-anchor;
-  line-height: 1;
-  display: inline-block;
-  text-decoration: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+.syntax--support {
+  color: #80FFBB;
 }
-
-.headeranchor:before {
-  content: '\f05c';
+.syntax--variable {
+  color: #CCCCCC;
 }
-
-.markdown-body .task-list-item {
-  list-style-type: none;
+.syntax--variable.syntax--language {
+  color: #FF80E1;
 }
-
-.markdown-body .task-list-item+.task-list-item {
-  margin-top: 3px;
+.syntax--meta.syntax--function-call {
+  color: #FFEE80;
 }
-
-.markdown-body .task-list-item input {
-  margin: 0 4px 0.25em -20px;
-  vertical-align: middle;
+.syntax--invalid {
+  color: #F8F8F8;
+  background-color: #800F00;
 }
-
-/* Media */
-@media only screen and (min-width: 480px) {
-  .markdown-body {
-    font-size:14px;
-  }
+.syntax--text .syntax--source,
+.syntax--string.syntax--unquoted.syntax--heredoc,
+.syntax--source .syntax--source {
+  color: #FFFFFF;
+  background-color: #223545;
 }
-
-@media only screen and (min-width: 768px) {
-  .markdown-body {
-    font-size:16px;
-  }
+.syntax--entity.syntax--other.syntax--inherited-class {
+  font-style: italic;
+  color: #80FCFF;
 }
-
-@media print {
-  .markdown-body * {
-    background: transparent !important;
-    color: black !important;
-    filter:none !important;
-    -ms-filter: none !important;
-  }
-
-  .markdown-body {
-    font-size:12pt;
-    max-width:100%;
-    outline:none;
-    border: 0;
-  }
-
-  .markdown-body a,
-  .markdown-body a:visited {
-    text-decoration: underline;
-  }
-
-  .markdown-body .headeranchor-link {
-    display: none;
-  }
-
-  .markdown-body a[href]:after {
-    content: " (" attr(href) ")";
-  }
-
-  .markdown-body abbr[title]:after {
-    content: " (" attr(title) ")";
-  }
-
-  .markdown-body .ir a:after,
-  .markdown-body a[href^="javascript:"]:after,
-  .markdown-body a[href^="#"]:after {
-    content: "";
-  }
-
-  .markdown-body pre {
-    white-space: pre;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-
-  .markdown-body pre,
-  .markdown-body blockquote {
-    border: 1px solid #999;
-    padding-right: 1em;
-    page-break-inside: avoid;
-  }
-
-  .markdown-body .progress,
-  .markdown-body .progress-bar {
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-
-  .markdown-body .progress {
-    border: 1px solid #ddd;
-  }
-
-  .markdown-body .progress-bar {
-    height: 22px;
-    border-right: 1px solid #ddd;
-  }
-
-  .markdown-body tr,
-  .markdown-body img {
-    page-break-inside: avoid;
-  }
-
-  .markdown-body img {
-    max-width: 100% !important;
-  }
-
-  .markdown-body p,
-  .markdown-body h2,
-  .markdown-body h3 {
-    orphans: 3;
-    widows: 3;
-  }
-
-  .markdown-body h2,
-  .markdown-body h3 {
-    page-break-after: avoid;
-  }
+.syntax--string.syntax--quoted .syntax--source {
+  color: #9EFF80;
 }
-</style><title>README</title></head><body><article class="markdown-body"><h1 id="ahcg_pipeline"><a name="user-content-ahcg_pipeline" href="#ahcg_pipeline" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>ahcg_pipeline</h1>
+.syntax--string .syntax--constant {
+  color: #80FF82;
+}
+.syntax--string.syntax--regexp {
+  color: #80FFC2;
+}
+.syntax--string .syntax--variable {
+  color: #EDEF7D;
+}
+.syntax--support.syntax--function {
+  color: #FFB054;
+}
+.syntax--support.syntax--constant {
+  color: #EB939A;
+}
+.syntax--support.syntax--type.syntax--exception {
+  color: #FF1E00;
+}
+.syntax--meta.syntax--preprocessor.syntax--c {
+  color: #8996A8;
+}
+.syntax--meta.syntax--preprocessor.syntax--c .syntax--keyword {
+  color: #AFC4DB;
+}
+.syntax--meta.syntax--sgml.syntax--html .syntax--meta.syntax--doctype,
+.syntax--meta.syntax--sgml.syntax--html .syntax--meta.syntax--doctype .syntax--entity,
+.syntax--meta.syntax--sgml.syntax--html .syntax--meta.syntax--doctype .syntax--string,
+.syntax--meta.xml-processing,
+.syntax--meta.xml-processing .syntax--entity,
+.syntax--meta.xml-processing .syntax--string {
+  color: #73817D;
+}
+.syntax--meta.syntax--tag,
+.syntax--meta.syntax--tag .syntax--entity {
+  color: #9EFFFF;
+}
+.syntax--meta.syntax--selector.syntax--css .syntax--entity.syntax--name.syntax--tag {
+  color: #9EFFFF;
+}
+.syntax--meta.syntax--selector.syntax--css .syntax--entity.syntax--other.syntax--attribute-name.syntax--id {
+  color: #FFB454;
+}
+.syntax--meta.syntax--selector.syntax--css .syntax--entity.syntax--other.syntax--attribute-name.syntax--class {
+  color: #5FE461;
+}
+.syntax--support.syntax--type.syntax--property-name.syntax--css {
+  color: #9DF39F;
+}
+.syntax--meta.property-group .syntax--support.syntax--constant.syntax--property-value.syntax--css,
+.syntax--meta.syntax--property-value .syntax--support.syntax--constant.syntax--property-value.syntax--css {
+  color: #F6F080;
+}
+.syntax--meta.syntax--preprocessor.syntax--at-rule .syntax--keyword.syntax--control.syntax--at-rule {
+  color: #F6AA11;
+}
+.syntax--meta.syntax--property-value .syntax--support.syntax--constant.named-color.syntax--css,
+.syntax--meta.syntax--property-value .syntax--constant {
+  color: #EDF080;
+}
+.syntax--meta.syntax--constructor.syntax--argument.syntax--css {
+  color: #EB939A;
+}
+.syntax--meta.syntax--diff,
+.syntax--meta.syntax--diff.syntax--header {
+  color: #F8F8F8;
+  background-color: #000E1A;
+}
+.syntax--markup.syntax--deleted {
+  color: #F8F8F8;
+  background-color: #4C0900;
+}
+.syntax--markup.syntax--changed {
+  color: #F8F8F8;
+  background-color: #806F00;
+}
+.syntax--markup.syntax--inserted {
+  color: #F8F8F8;
+  background-color: #154F00;
+}
+.syntax--markup.syntax--raw {
+  background-color: rgba(143, 221, 246, 0.19);
+}
+.syntax--markup.syntax--quote {
+  background-color: #004480;
+}
+.syntax--markup.syntax--list {
+  background-color: #130D26;
+}
+.syntax--markup.syntax--bold {
+  font-weight: bold;
+  color: #C1AFFF;
+}
+.syntax--markup.syntax--italic {
+  font-style: italic;
+  color: #B8FFD9;
+}
+.syntax--markup.syntax--heading {
+  font-weight: bold;
+  color: #C8E4FD;
+  background-color: #001221;
+}
+</style>
+  </head>
+  <body class='markdown-preview' data-use-github-style><h1 id="ahcg_pipeline">ahcg_pipeline</h1>
 <p>Variant calling pipeline for genomic data analysis. This pipeline is part of the class Applied Human Computational Genomics - Fall 2017 of the Georgia Institute of Technology.</p>
-<h2 id="requirements"><a name="user-content-requirements" href="#requirements" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Requirements</h2>
+<h2 id="requirements">Requirements</h2>
 <ol>
 <li><a href="https://www.python.org/download/releases/3.4.1/">Python3 - v3.4.1</a></li>
 <li><a href="http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip">Trimmomatic - v0.36</a></li>
@@ -1027,25 +437,16 @@ body .markdown-body
 <li><a href="https://github.com/BoevaLab/FREEC/archive/v11.0.tar.gz">Control-FREEC v11.0</a></li>
 <li><a href="https://cran.cnr.berkeley.edu/">R language - v3.3.2</a></li>
 </ol>
-<h2 id="reference-genome"><a name="user-content-reference-genome" href="#reference-genome" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Reference genome</h2>
+<h2 id="reference-genome">Reference genome</h2>
 <p>Reference genomes can be downloaded from <a href="http://support.illumina.com/sequencing/sequencing_software/igenome.html">Illumina iGenomes</a></p>
-<h2 id="test-data"><a name="user-content-test-data" href="#test-data" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Test data</h2>
+<h2 id="test-data">Test data</h2>
 <p>Use the following protocol to download and prepare test dataset from NIST sample NA12878</p>
-<pre><code class="sh">wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq &gt; test_r1.fastq
-head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq &gt; test_r2.fastq
-</code></pre>
-
-<h2 id="help"><a name="user-content-help" href="#help" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Help</h2>
+<pre class="editor-colors lang-{sh}"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>wget&nbsp;</span><span class="syntax--markup syntax--underline syntax--link syntax--ftp syntax--hyperlink"><span>ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz</span></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>wget&nbsp;</span><span class="syntax--markup syntax--underline syntax--link syntax--ftp syntax--hyperlink"><span>ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz</span></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>gunzip&nbsp;NIST7035_TAAGGCGA_L001_R1_001.fastq.gz</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>gunzip&nbsp;NIST7035_TAAGGCGA_L001_R2_001.fastq.gz</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>head&nbsp;-100000&nbsp;NIST7035_TAAGGCGA_L001_R1_001.fastq&nbsp;&gt;&nbsp;test_r1.fastq</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>head&nbsp;-100000&nbsp;NIST7035_TAAGGCGA_L001_R2_001.fastq&nbsp;&gt;&nbsp;test_r2.fastq</span></span></div></pre>
+<h2 id="help">Help</h2>
 <p>To access help use the following command:</p>
-<pre><code class="sh">python3 ahcg_pipeline.py -h
-</code></pre>
-
-<h2 id="configuration-file"><a name="user-content-configuration-file" href="#configuration-file" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Configuration file</h2>
-<h3 id="tools-section"><code>[tools]</code> section</h3>
+<pre class="editor-colors lang-{sh}"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>python3&nbsp;ahcg_pipeline.py&nbsp;-h</span></span></div></pre>
+<h2 id="configuration-file">Configuration file</h2>
+<h3 id="-data-section"><code style="font-family: &quot;DejaVu Sans Mono&quot;;">[data]</code> section</h3>
 <table>
 <thead>
 <tr>
@@ -1055,36 +456,84 @@ head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq &gt; test_r2.fastq
 </thead>
 <tbody>
 <tr>
-<td><code>bowtie2</code></td>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">inputfiles</code></td>
+<td>List of paired end read files (comma sparated)</td>
+</tr>
+<tr>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">geneset</code></td>
+<td>Path to the bed file with genes of interest to calculate coverage statistics</td>
+</tr>
+<tr>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">outputdir</code></td>
+<td>Path to the output directory</td>
+</tr>
+<tr>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">adapters</code></td>
+<td>Path to adapters fasta file to perform sequence trimming with Trimmomatic</td>
+</tr>
+<tr>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">chrlenfile</code></td>
+<td>Path to file with chromosome lengths for Control-FREEC</td>
+</tr>
+<tr>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">chrfiles</code></td>
+<td>Path to the directory with chromosomes fasta files for Control-FREEC</td>
+</tr>
+<tr>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">dbsnp</code></td>
+<td>Path to dbSNP vcf file for GATK</td>
+</tr>
+<tr>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">index</code></td>
+<td>Path to the prefix of the reference Bowtie2 index</td>
+</tr>
+<tr>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">reference</code></td>
+<td>Path to the reference genome fasta file</td>
+</tr>
+</tbody>
+</table>
+<h3 id="-tools-section"><code style="font-family: &quot;DejaVu Sans Mono&quot;;">[tools]</code> section</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">bowtie2</code></td>
 <td>Path to Bowtie2 executable</td>
 </tr>
 <tr>
-<td><code>freec</code></td>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">freec</code></td>
 <td>Path to Control-FREEC executable</td>
 </tr>
 <tr>
-<td><code>gatk</code></td>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">gatk</code></td>
 <td>Path to GATK jar file</td>
 </tr>
 <tr>
-<td><code>makegraph</code></td>
-<td>Path to Control-FREEC <code>makeGraph.R</code> script (Usually in the folder <code>scripts</code> at the Control-FREEC root dir)</td>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">makegraph</code></td>
+<td>Path to Control-FREEC <code style="font-family: &quot;DejaVu Sans Mono&quot;;">makeGraph.R</code> script (Usually in the folder <code style="font-family: &quot;DejaVu Sans Mono&quot;;">scripts</code> at the Control-FREEC root dir)</td>
 </tr>
 <tr>
-<td><code>picard</code></td>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">picard</code></td>
 <td>Path to Picard jar file</td>
 </tr>
 <tr>
-<td><code>samtools</code></td>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">samtools</code></td>
 <td>Path to Samtools executable</td>
 </tr>
 <tr>
-<td><code>trimmomatic</code></td>
+<td><code style="font-family: &quot;DejaVu Sans Mono&quot;;">trimmomatic</code></td>
 <td>Path to Trimmomatic jar file</td>
 </tr>
 </tbody>
 </table>
-<h3 id="data-section"><code>[data]</code> section</h3>
+<h3 id="-freec-control-section"><code style="font-family: &quot;DejaVu Sans Mono&quot;;">[freec-control]</code> section</h3>
+<p>Optional section for Control-FREEC's config file <code style="font-family: &quot;DejaVu Sans Mono&quot;;">control</code> section parameters</p>
 <table>
 <thead>
 <tr>
@@ -1094,81 +543,33 @@ head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq &gt; test_r2.fastq
 </thead>
 <tbody>
 <tr>
-<td><code>adapters</code></td>
-<td>Path to adapters fasta file to perform sequence trimming with Trimmomatic</td>
+<td>mateFile</td>
+<td>Path to file to act as control of the current sample. See control-FREEC manual for details&gt;</td>
 </tr>
 <tr>
-<td><code>chrlenfile</code></td>
-<td>Path to file with chromosome lengths for Control-FREEC</td>
+<td>inputFormat</td>
+<td>Format of mateFile (SAM, BAM, pileup and others. See control-FREEC manual for details)&gt;</td>
 </tr>
 <tr>
-<td><code>chrfiles</code></td>
-<td>Path to the directory with chromosomes fasta files for Control-FREEC</td>
-</tr>
-<tr>
-<td><code>dbsnp</code></td>
-<td>Path to dbSNP vcf file for GATK</td>
-</tr>
-<tr>
-<td><code>geneset</code></td>
-<td>Path to the bed file with genes of interest to calculate coverage statistics</td>
-</tr>
-<tr>
-<td><code>index</code></td>
-<td>Path to the prefix of the reference Bowtie2 index</td>
-</tr>
-<tr>
-<td><code>reference</code></td>
-<td>Path to the reference genome fasta file</td>
-</tr>
-<tr>
-<td><code>inputfiles</code></td>
-<td>List of paired end read files (comma sparated)</td>
-</tr>
-<tr>
-<td><code>outputdir</code></td>
-<td>Path to the output directory</td>
+<td>mateOrientation</td>
+<td>Orientation of reads in mateFile. 0 - single ends), RF - Illumina mate-pairs, FR - Illumina paired-ends), FF - SOLiD mate-pairs. See control-FREEC manual for details</td>
 </tr>
 </tbody>
 </table>
-<h3 id="example-of-config-file"><a name="user-content-example-of-config-file" href="#example-of-config-file" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Example of config file</h3>
-<pre><code>[data]
-adapters        = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa
-chrlenfile      = /data2/AHCG2017FALL/reference_genome/chromosomeSizes.txt
-chrfiles        = /data2/AHCG2017FALL/reference_genome/chroms/
-dbsnp           = /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz
-geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
-index           = /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome
-reference       = /data2/AHCG2017FALL/reference_genome/genome.fa
-inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
-outputdir       = /data2/AHCG2017FALL/output5
-
-[tools]
-bowtie2         = /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2
-freec           = /data2/AHCG2017FALL/bin/FREEC/src/freec
-gatk            = /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar
-java            = /data2/AHCG2017FALL/bin/java-1.8/bin/java
-makegraph       = /data2/AHCG2017FALL/bin/FREEC/scripts/makeGraph.R
-picard          = /data2/AHCG2017FALL/bin/picard/picard.jar
-samtools        = /data2/AHCG2017FALL/bin/samtools-1.5/samtools
-trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
-</code></pre>
-
-<h2 id="execution-example"><a name="user-content-execution-example" href="#execution-example" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Execution example</h2>
-<h3 id="building-directory-structure"><a name="user-content-building-directory-structure" href="#building-directory-structure" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Building directory structure</h3>
-<pre><code class="sh">mkdir -p data/reads data/reference data/adapters output 
-</code></pre>
-
-<h3 id="downloading-data"><a name="user-content-downloading-data" href="#downloading-data" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Downloading data</h3>
-<h4 id="read-sample"><a name="user-content-read-sample" href="#read-sample" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Read sample</h4>
-<p>We will download the sample SRR948996 from the SRA databse using the SRA-Toolkit:</p>
-<pre><code class="sh">fastq-dump --split-files SRR948994
-</code></pre>
-
-<h4 id="reference-genome_1"><a name="user-content-reference-genome_1" href="#reference-genome_1" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Reference genome</h4>
-<pre><code class="sh">wget ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Homo_sapiens/NCBI/GRCh38/Homo_sapiens_NCBI_GRCh38.tar.gz
-</code></pre>
-
-<h3 id="running-the-pipeline"><a name="user-content-running-the-pipeline" href="#running-the-pipeline" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Running the pipeline</h3>
-<pre><code class="sh">./ahcg_pipeline_v1.0.1.py -c config_file.txt
-</code></pre></article></body></html>
+<h3 id="example-of-config-file">Example of config file</h3>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>[data]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>#&nbsp;inputfiles&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>sraid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;SRR2530742</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>geneset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>outputdir&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/output5</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>adapters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>chrlenfile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/reference_genome/chromosomeSizes.txt</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>chrfiles&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/reference_genome/chroms/</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dbsnp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>index&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>reference&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/reference_genome/genome.fa</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>[tools]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>assesssig&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/FREEC/scripts/assess_significance.R</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>bowtie2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>fastq-dump&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/sratoolkit/bin/fastq-dump</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>freec&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/FREEC/src/freec</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>gatk&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>java&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/java-1.8/bin/java</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>makegraph&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/FREEC/scripts/makeGraph.R</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>picard&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/picard/picard.jar</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>samtools&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/samtools-1.5/samtools</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>trimmomatic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>[freec-control]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>mateFile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;/data2/AHCG2017FALL/output4/SRR2530741_1_trimmed_final.bam</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>inputFormat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;BAM</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>mateOrientation&nbsp;=&nbsp;FR</span></span></div></pre><h2 id="execution-example">Execution example</h2>
+<h3 id="building-directory-structure">Building directory structure</h3>
+<pre class="editor-colors lang-{sh}"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>mkdir&nbsp;-p&nbsp;data/reads&nbsp;data/reference&nbsp;data/adapters&nbsp;output</span></span></div></pre>
+<h3 id="downloading-data">Downloading data</h3>
+<h4 id="read-sample">Read sample</h4>
+<p>We can download the sample SRR948996 from the SRA databse using the SRA-Toolkit
+to specify their path using <code style="font-family: &quot;DejaVu Sans Mono&quot;;">inputfiles</code> option in the config file:</p>
+<pre class="editor-colors lang-{sh}"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>fastq-dump&nbsp;--split-files&nbsp;SRR948994</span></span></div></pre>
+<p>Alternatively, you can specify the id of the sample (SRR948994) using the
+<code style="font-family: &quot;DejaVu Sans Mono&quot;;">sraid</code> option in the config file to delegate the download of the sample files
+to the pipeline.</p>
+<h4 id="reference-genome">Reference genome</h4>
+<pre class="editor-colors lang-{sh}"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>wget&nbsp;</span><span class="syntax--markup syntax--underline syntax--link syntax--ftp syntax--hyperlink"><span>ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Homo_sapiens/NCBI/GRCh38/Homo_sapiens_NCBI_GRCh38.tar.gz</span></span></span></div></pre>
+<h3 id="running-the-pipeline">Running the pipeline</h3>
+<pre class="editor-colors lang-{sh}"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>./ahcg_pipeline_v1.0.1.py&nbsp;-c&nbsp;config_file.txt</span></span></div></pre></body>
+</html>
