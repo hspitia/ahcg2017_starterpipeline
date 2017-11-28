@@ -161,7 +161,8 @@ def main(config_path):
 
     # Check for input files (inputfiles or sraid options)
     if 'inputfiles' in confData:
-        files = getlist(config[key])
+        files = getlist(confData['inputfiles'])
+        # print("{}".format(getlist(confData['inputfiles'])))
         files = [os.path.abspath(fs) for fs in files]
         for f in files:
             if not os.path.exists(f):
