@@ -56,20 +56,18 @@ def checkTool(key, name, confOptions):
     if key in confOptions:
         confOptions[key] = os.path.abspath(confOptions[key])
         if not os.path.exists(confOptions[key]):
-            raise FileNotFoundError('{} not found at {}'.format(name, confOptions[key]))
-            # sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
-            # sys.exit(1)
+            sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
+            sys.exit(1)
     else:
         toolPath = shutil.which(key)
         if toolPath != None:
                 confOptions[key] = toolPath
         else:
-            raise FileNotFoundError('{} not found in system and not provided in the config file'.format(name))
-            # sys.stderr.write('ERROR: {} not found in system and not provided in the config file.\n'.format(name))
-            # sys.exit(1)
+            sys.stderr.write('ERROR: {} not found in system and not provided in the config file.\n'.format(name))
+            sys.exit(1)
 # ==============================================================================
 def checkDataFile(key, name, confOptions):
-    """Check if the data file key defined in confOptions, exists"""
+    """Check if the data file defined by key in confOptions, exists"""
     if key in confOptions:
         confOptions[key] = os.path.abspath(confOptions[key])
         if key == 'index':
@@ -77,14 +75,11 @@ def checkDataFile(key, name, confOptions):
             if len(indicies) == 0:
                 sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
                 sys.exit(1)
-                # raise FileNotFoundError('Bowtie index not found at {0}'.format(confOptions[key]))
         else:
             if not os.path.exists(confOptions[key]):
                 sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
                 sys.exit(1)
-                # raise FileNotFoundError('{} not found at {}'.format(name, confOptions[key]))
     else:
-        # raise FileNotFoundError('{} ({}) not provided in the config file'.format(name, key))
         sys.stderr.write('ERROR: {} ({}) not found not provided in the config file\n'.format(name, key))
         sys.exit(1)
 # ==============================================================================
@@ -103,9 +98,18 @@ def createControlFreecConfigFile(bamPath, confOptions, freecConfPath):
     }
     freecConf['sample'] = {
         'mateFile'        : bamPath,
-        'inputFormat'     : 'BAM',
-        'mateOrientation' : 0
+        'inputFormat'     : 'BAM'
+        'mateOrientation' : 'FR'
     }
+    # if 'freec-sample' in confOptions:
+    #     if 'mateOrientation' in confOptions['freec-sample']:
+    #         freecConf['sample']['mateOrientation'] = confOptions['freec-sample']['mateOrientation']
+    # else
+    #     freecConf['sample']['mateOrientation'] = 0
+        
+    if 'freec-control' in confOptions:
+        freecConf['control'] = confOptions['freec-control']
+        
     with open(freecConfPath, 'w') as configfile:
         freecConf.write(configfile)
 # ==============================================================================
@@ -165,14 +169,14 @@ def main(config_path):
                 sys.exit(1)
     elif 'sraid' in confData:
         # Download SRA sample
-        fqdumpCmd = ['fastq-dump', '--split-files', '-O', confData['outputdir'], confData['sraid']]
+        fqdumpCmd = [confTools['fastq-dump'], '--split-files', '-O', confData['outputdir'], confData['sraid']]
         print("INFO: Downloading SRA sample {}".format(confData['sraid']))
-        # fqDumpRun = subprocess.Popen(fqdumpCmd, shell=False)
-        # fqDumpRun.wait()
+        fqDumpRun = subprocess.Popen(fqdumpCmd, shell=False)
+        fqDumpRun.wait()
         
-        # if fqDumpRun.returncode != 0:
-        #     sys.stderr.write('SRA sample download failed; Exiting program\n')
-        #     sys.exit(1)
+        if fqDumpRun.returncode != 0:
+            sys.stderr.write('ERROR: SRA sample download failed; Exiting program\n')
+            sys.exit(1)
             
         print("INFO: SRA sample {} downloaded to {}\n".format(confData['sraid'], confData['outputdir']))
     else:
@@ -200,13 +204,13 @@ def main(config_path):
               sread1, tread2, sread2, 'ILLUMINACLIP:{0}:2:30:10'.format(confData['adapters']),
               'LEADING:0', 'TRAILING:0', 'SLIDINGWINDOW:4:15', 'MINLEN:36']
     
-    # print("INFO: Sequence reads trimming - Started")
-    # trun = subprocess.Popen(tcmd, shell=False)
-    # trun.wait() 
+    print("INFO: Sequence reads trimming - Started")
+    trun = subprocess.Popen(tcmd, shell=False)
+    trun.wait() 
     
-    # if trun.returncode != 0:
-    #     sys.stderr.write('ERROR: Fastq trimming failed; Exiting program\n')
-    #     sys.exit(1)
+    if trun.returncode != 0:
+        sys.stderr.write('ERROR: Fastq trimming failed; Exiting program\n')
+        sys.exit(1)
     
     print("INFO: Sequence reads trimming - Done!\n")
     
@@ -216,13 +220,13 @@ def main(config_path):
     bcmd     = [ confTools['bowtie2'], '-x', confData['index'], '-S', 
                  sam_path, '-p', '1' , '-1', tread1, '-2', tread2]
     
-    # print("INFO: Sequence read alignment - Started")
-    # brun = subprocess.Popen(bcmd, shell=False)
-    # brun.wait()
+    print("INFO: Sequence read alignment - Started")
+    brun = subprocess.Popen(bcmd, shell=False)
+    brun.wait()
     
-    # if brun.returncode != 0:
-    #     sys.stderr.write('ERROR: Bowtie2 failed; Exiting program\n')
-    #     sys.exit(1)
+    if brun.returncode != 0:
+        sys.stderr.write('ERROR: Bowtie2 failed; Exiting program\n')
+        sys.exit(1)
     
     print("INFO: Sequence read alignment - Done!\n")
     # ==========================================================================
@@ -237,13 +241,13 @@ def main(config_path):
                 'RGDT=2016-08-24', 'RGPI=null', 
                 'RGPG=Test', 'RGPM=Test', 'CREATE_INDEX=true']
     
-    # print("INFO: Read group information addition - Started")
-    # arun = subprocess.Popen(acmd, shell=False)
-    # arun.wait()
+    print("INFO: Read group information addition - Started")
+    arun = subprocess.Popen(acmd, shell=False)
+    arun.wait()
     
-    # if arun.returncode != 0:
-    #     print('ERROR: Picard add read groups failed; Exiting program\n')
-    #     sys.exit(1)
+    if arun.returncode != 0:
+        print('ERROR: Picard add read groups failed; Exiting program\n')
+        sys.exit(1)
     
     print("INFO: Read group information addition - Done!\n")
     # ==========================================================================
@@ -498,6 +502,7 @@ config file format and options:
                 (Usually in the folder scripts at the Control-FREEC root dir)
   bowtie2     = <Path to Bowtie2 executable>
   freec       = <Path to Control-FREEC executable>
+  fastq-dump  = <Path to fastq-dump (from SRA toolkit)>
   gatk        = <Path to GATK jar file>
   java        = <Path to Java executable>
   makegraph   = <Path to Control-FREEC makeGraph.R script>
@@ -506,12 +511,19 @@ config file format and options:
   samtools    = <Path to Samtools executable>
   trimmomatic = <Path to Trimmomatic jar file>
   
+  [freec-control] # optional section for Control-FREEC app
+  mateFile        = <Path to file to act as control of the current sample. See control-FREEC manual for details>
+  inputFormat     = <Format of mateFile (SAM, BAM, pileup and others. See control-FREEC manual for details)>
+  mateOrientation = <Orientation of reads in mateFile. 0 - single ends), RF - Illumina mate-pairs,
+FR - Illumina paired-ends), FF - SOLiD mate-pairs. See control-FREEC manual for details>
+  
   
 config file details:
   - Sections [tools] and [data] are required
-  - All the options are required except for those that correspond to executable
-    files (bowtie2, freec, java, and samtools) which can be omitted 
-    if they are available in the system through the $PATH variable.
+  - All the options in [tools] and [data] are required except for those that 
+    correspond to executable files (bowtie2, fastq-dump, freec, java, and 
+    samtools) which can be omitted if they are available in the system through 
+    the $PATH variable.
   - inputfiles and sraid options ([data] section) are mutually exclusive. 
     If the two options are specified, inputfiles will have priority
 '''))
@@ -521,10 +533,23 @@ config file details:
     parser.add_argument('-v', '--version', action = 'version', 
         version = '''%(prog)s 1.0.7
 Copyright (c) 2017 Georgia Institute of Technology
-Applied Human Computational Genomics - Fall 2017''')
+Applied Human Computational Genomics - Fall 2017
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see http://www.gnu.org/licenses/.''')
     
-    # Enrichment kit (Nextera Enrichment Capture kit) 
-    # Download samples given an SRA accession
+    # Enrichment kit (eg Nextera Enrichment Capture kit) 
+    # Download samples given an SRA accession - Done!
     
     if len(sys.argv) == 1:
         parser.print_help()
