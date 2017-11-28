@@ -51,17 +51,15 @@ def checkTool(key, name, confOptions):
     if key in confOptions:
         confOptions[key] = os.path.abspath(confOptions[key])
         if not os.path.exists(confOptions[key]):
-            raise FileNotFoundError('{} not found at {}'.format(name, confOptions[key]))
-            # sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
-            # sys.exit(1)
+            sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
+            sys.exit(1)
     else:
         toolPath = shutil.which(key)
         if toolPath != None:
                 confOptions[key] = toolPath
         else:
-            raise FileNotFoundError('{} not found in system and not provided in the config file'.format(name))
-            # sys.stderr.write('ERROR: {} not found in system and not provided in the config file.\n'.format(name))
-            # sys.exit(1)
+            sys.stderr.write('ERROR: {} not found in system and not provided in the config file.\n'.format(name))
+            sys.exit(1)
 # ==============================================================================
 def getlist(option, sep=',', chars=None):
     """Return a list from a ConfigParser option. By default, 
@@ -76,30 +74,28 @@ def checkDataOption(key, name, confOptions):
             files = [os.path.abspath(fs) for fs in files]
             for f in files:
                 if not os.path.exists(f):
-                    raise FileNotFoundError('Fastq file not found at {}'.format(f))
-                    # sys.stderr.write('ERROR: Fastq file not found at {}\n'.format(f))
-                    # sys.exit(1)
+                    sys.stderr.write('ERROR: Fastq file not found at {}\n'.format(f))
+                    sys.exit(1)
         elif key == 'index':
             indicies = glob.glob('{0}.*.bt2'.format(confOptions[key]))
             if len(indicies) == 0:
-                raise FileNotFoundError('Bowtie index not found at {0}'.format(confOptions[key]))
+                sys.stderr.write('ERROR: Bowtie index not found at {0}'.format(confOptions[key]))
+                sys.exit(1)
         elif key == 'outputdir':
             if not os.path.exists(confOptions['outputdir']):
                 os.mkdir(confOptions['outputdir'])
         else:
             confOptions[key] = os.path.abspath(confOptions[key])
             if not os.path.exists(confOptions[key]):
-                raise FileNotFoundError('{} not found at {}'.format(name, confOptions[key]))
-                # sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
-                # sys.exit(1)
+                sys.stderr.write('ERROR: {} not found at {}\n'.format(name, confOptions[key]))
+                sys.exit(1)
     elif key == 'outputdir':
         confOptions['outputdir'] = 'out'
         if not os.path.exists(confOptions['outputdir']):
             os.mkdir(confOptions['outputdir'])
     else:
-        raise FileNotFoundError('{} ({}) not provided in the config file'.format(name, key))
-        # sys.stderr.write('ERROR: {} ({}) not found not provided in the config file\n'.format(name, key))
-        # sys.exit(1)
+        sys.stderr.write('ERROR: {} ({}) not found not provided in the config file\n'.format(name, key))
+        sys.exit(1)
 # ==============================================================================
 def createControlFreecConfigFile(bamPath, confOptions, freecConfPath):
     '''Creates a config file for Control-FREEC based on files generated in this
