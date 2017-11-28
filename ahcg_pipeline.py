@@ -98,7 +98,7 @@ def createControlFreecConfigFile(bamPath, confOptions, freecConfPath):
     }
     freecConf['sample'] = {
         'mateFile'        : bamPath,
-        'inputFormat'     : 'BAM'
+        'inputFormat'     : 'BAM',
         'mateOrientation' : 'FR'
     }
     # if 'freec-sample' in confOptions:
@@ -512,10 +512,15 @@ config file format and options:
   trimmomatic = <Path to Trimmomatic jar file>
 
   [freec-control] # optional section for Control-FREEC app
-  mateFile        = <Path to file to act as control of the current sample. See control-FREEC manual for details>
-  inputFormat     = <Format of mateFile (SAM, BAM, pileup and others. See control-FREEC manual for details)>
-  mateOrientation = <Orientation of reads in mateFile. 0 - single ends), RF - Illumina mate-pairs,
-FR - Illumina paired-ends), FF - SOLiD mate-pairs. See control-FREEC manual for details>
+  mateFile        = <Path to file to act as control of the current sample>
+                    See control-FREEC manual for details.
+  inputFormat     = <Format of mateFile> 
+                    SAM, BAM, pileup and others. See control-FREEC manual 
+                    for details.
+  mateOrientation = <Orientation of reads in mateFile.> 
+                    0 - single ends, RF - Illumina mate-pairs, 
+                    FR - Illumina paired-ends, FF - SOLiD mate-pairs.
+                    See control-FREEC manual for details.
 
 
 config file details:
@@ -531,7 +536,7 @@ config file details:
         help = 'Path to config file')
 
     parser.add_argument('-v', '--version', action = 'version',
-        version = '''%(prog)s 1.0.7
+        version = '''%(prog)s 1.0.8
 Copyright (c) 2017 Georgia Institute of Technology
 Applied Human Computational Genomics - Fall 2017
 
