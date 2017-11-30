@@ -14,32 +14,22 @@ Variant calling pipeline for genomic data analysis. This pipeline is part of the
 7. [Control-FREEC v11.0](https://github.com/BoevaLab/FREEC/archive/v11.0.tar.gz)
 8. [R language - v3.3.2](https://cran.cnr.berkeley.edu/)
 
-## Reference genome
-
-Reference genomes can be downloaded from [Illumina iGenomes](http://support.illumina.com/sequencing/sequencing_software/igenome.html)
-
-## Test data
-
-Use the following protocol to download and prepare test dataset from NIST sample NA12878
-
-```{sh}
-wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq > test_r1.fastq
-head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq > test_r2.fastq
-```
-
 ## Help
 
 To access help use the following command:
 
 ```{sh}
-python3 ahcg_pipeline.py -h
+./ahcg_pipeline.py -h
 ```
 
 ## Configuration file
+
+A configuration file is required to run the pipeline. This config file has two 
+required sections `[tools]` and `[data]` in which the required software tools and input data are described. An additional optional section `[freec-control]` can be included to specify options for the `[control]` section of the configuration of the Control-FREEC tool (see details [here](http://boevalab.com/FREEC/tutorial.html))
+
+All the options are 
+
+
 
 ### `[data]` section
 
@@ -109,6 +99,23 @@ trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
 mateFile        = /data2/AHCG2017FALL/output4/SRR2530741_1_trimmed_final.bam
 inputFormat     = BAM
 mateOrientation = FR
+```
+
+## Reference genome
+
+Reference genomes can be downloaded from [Illumina iGenomes](http://support.illumina.com/sequencing/sequencing_software/igenome.html)
+
+## Test data
+
+Use the following protocol to download and prepare test dataset from NIST sample NA12878
+
+```{sh}
+wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
+wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
+gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
+gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
+head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq > test_r1.fastq
+head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq > test_r2.fastq
 ```
 
 ##  Execution example

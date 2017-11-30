@@ -1027,24 +1027,14 @@ body .markdown-body
 <li><a href="https://github.com/BoevaLab/FREEC/archive/v11.0.tar.gz">Control-FREEC v11.0</a></li>
 <li><a href="https://cran.cnr.berkeley.edu/">R language - v3.3.2</a></li>
 </ol>
-<h2 id="reference-genome"><a name="user-content-reference-genome" href="#reference-genome" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Reference genome</h2>
-<p>Reference genomes can be downloaded from <a href="http://support.illumina.com/sequencing/sequencing_software/igenome.html">Illumina iGenomes</a></p>
-<h2 id="test-data"><a name="user-content-test-data" href="#test-data" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Test data</h2>
-<p>Use the following protocol to download and prepare test dataset from NIST sample NA12878</p>
-<pre><code class="sh">wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq &gt; test_r1.fastq
-head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq &gt; test_r2.fastq
-</code></pre>
-
 <h2 id="help"><a name="user-content-help" href="#help" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Help</h2>
 <p>To access help use the following command:</p>
-<pre><code class="sh">python3 ahcg_pipeline.py -h
+<pre><code class="sh">./ahcg_pipeline.py -h
 </code></pre>
 
 <h2 id="configuration-file"><a name="user-content-configuration-file" href="#configuration-file" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Configuration file</h2>
+<p>A configuration file is required to run the pipeline. This config file has two <br />
+required sections <code>[tools]</code> and <code>[data]</code> in which the required software tools and input data are described. An additional optional section <code>[freec-control]</code> can be included to specify options for the <code>[control]</code> section of the configuration of the Control-FREEC tool (see details <a href="http://boevalab.com/FREEC/tutorial.html">here</a>)</p>
 <h3 id="data-section"><code>[data]</code> section</h3>
 <table>
 <thead>
@@ -1185,6 +1175,18 @@ trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
 mateFile        = /data2/AHCG2017FALL/output4/SRR2530741_1_trimmed_final.bam
 inputFormat     = BAM
 mateOrientation = FR
+</code></pre>
+
+<h2 id="reference-genome"><a name="user-content-reference-genome" href="#reference-genome" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Reference genome</h2>
+<p>Reference genomes can be downloaded from <a href="http://support.illumina.com/sequencing/sequencing_software/igenome.html">Illumina iGenomes</a></p>
+<h2 id="test-data"><a name="user-content-test-data" href="#test-data" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Test data</h2>
+<p>Use the following protocol to download and prepare test dataset from NIST sample NA12878</p>
+<pre><code class="sh">wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
+wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
+gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
+gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
+head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq &gt; test_r1.fastq
+head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq &gt; test_r2.fastq
 </code></pre>
 
 <h2 id="execution-example"><a name="user-content-execution-example" href="#execution-example" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Execution example</h2>
