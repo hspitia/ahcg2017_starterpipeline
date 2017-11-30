@@ -22,8 +22,3 @@ makegraph       = /data2/AHCG2017FALL/bin/FREEC/scripts/makeGraph.R
 picard          = /data2/AHCG2017FALL/bin/picard/picard.jar
 samtools        = /data2/AHCG2017FALL/bin/samtools-1.5/samtools
 trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
-
-[freec-control]
-mateFile        = /data2/AHCG2017FALL/output4/SRR2530741_1_trimmed_final.bam
-inputFormat     = BAM
-mateOrientation = FR

@@ -98,7 +98,7 @@ def createControlFreecConfigFile(bamPath, confOptions, freecConfPath):
     }
     freecConf['sample'] = {
         'mateFile'        : bamPath,
-        'inputFormat'     : 'BAM'
+        'inputFormat'     : 'BAM',
         'mateOrientation' : 'FR'
     }
     # if 'freec-sample' in confOptions:
@@ -157,11 +157,12 @@ def main(config_path):
 
     # Create the output directory
     if not os.path.exists(confData['outputdir']):
-        os.mkdir(confData['outputdir'])
+        os.makedirs(confData['outputdir'])
 
     # Check for input files (inputfiles or sraid options)
     if 'inputfiles' in confData:
-        files = getlist(config[key])
+        files = getlist(confData['inputfiles'])
+        # print("{}".format(getlist(confData['inputfiles'])))
         files = [os.path.abspath(fs) for fs in files]
         for f in files:
             if not os.path.exists(f):
@@ -512,10 +513,15 @@ config file format and options:
   trimmomatic = <Path to Trimmomatic jar file>
 
   [freec-control] # optional section for Control-FREEC app
-  mateFile        = <Path to file to act as control of the current sample. See control-FREEC manual for details>
-  inputFormat     = <Format of mateFile (SAM, BAM, pileup and others. See control-FREEC manual for details)>
-  mateOrientation = <Orientation of reads in mateFile. 0 - single ends), RF - Illumina mate-pairs,
-FR - Illumina paired-ends), FF - SOLiD mate-pairs. See control-FREEC manual for details>
+  mateFile        = <Path to file to act as control of the current sample>
+                    See control-FREEC manual for details.
+  inputFormat     = <Format of mateFile> 
+                    SAM, BAM, pileup and others. See control-FREEC manual 
+                    for details.
+  mateOrientation = <Orientation of reads in mateFile.> 
+                    0 - single ends, RF - Illumina mate-pairs, 
+                    FR - Illumina paired-ends, FF - SOLiD mate-pairs.
+                    See control-FREEC manual for details.
 
 
 config file details:
@@ -531,7 +537,7 @@ config file details:
         help = 'Path to config file')
 
     parser.add_argument('-v', '--version', action = 'version',
-        version = '''%(prog)s 1.0.7
+        version = '''%(prog)s 1.0.8
 Copyright (c) 2017 Georgia Institute of Technology
 Applied Human Computational Genomics - Fall 2017
 

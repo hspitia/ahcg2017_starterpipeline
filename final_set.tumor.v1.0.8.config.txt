@@ -1,8 +1,8 @@
 [data]
-# inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
-sraid           = SRR2530742
+inputfiles      = /data2/AHCG2017FALL/data5/SRR1654210_1.fastq,/data2/AHCG2017FALL/data5/SRR1654210_2.fastq
+# sraid           = SRR1654210
 geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
-outputdir       = /data2/AHCG2017FALL/output5
+outputdir       = /data2/AHCG2017FALL/final_set/SRR1654210_tumor
 
 adapters        = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa
 chrlenfile      = /data2/AHCG2017FALL/reference_genome/chromosomeSizes.txt
@@ -24,6 +24,6 @@ samtools        = /data2/AHCG2017FALL/bin/samtools-1.5/samtools
 trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
 
 [freec-control]
-mateFile        = /data2/AHCG2017FALL/output4/SRR2530741_1_trimmed_final.bam
+mateFile        = /data2/AHCG2017FALL/final_set/SRR1654222_germline/SRR1654222_1_trimmed_final.bam
 inputFormat     = BAM
 mateOrientation = FR
